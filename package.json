@@ -20,7 +20,8 @@
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "vue": "^3.4.15",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "vue3-slide-verify": "^1.1.5"
   },
   "devDependencies": {
     "@arco-design/web-vue": "^2.54.6",

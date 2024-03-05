@@ -1,33 +1,37 @@
 <script setup lang="ts">
 import BasicLayout from '@/layout/basicLayout.vue'
-import { useRouter } from 'vue-router'
-import useUserStore from '@/stores/user/user'
-const router = useRouter()
-const loginState = useUserStore()
-router.beforeEach((to, from, next) => {
-  if (to.meta?.Auth === 'admin') {
-    if (loginState.userRole !== 'admin') {
-      // 如果用户角色不是管理员，重定向到"/"
-      next('/')
-    } else {
-      // 用户角色是管理员，允许导航到/admin
-      next()
-    }
-  } else {
-    // 不需要管理员权限，继续导航
-    next()
-  }
+import { onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+/**
+ * 全局初始化函数，有全局单次调用的代码，都可以写在这里
+ */
+const doInit = () => {
+  console.log('欢迎来到 OJ 项目')
+}
+
+onMounted(() => {
+  doInit()
 })
 </script>
 
 <template>
   <div id="app">
-    <BasicLayout></BasicLayout>
+    <template v-if="route.path.startsWith('/user') || route.path.startsWith('/view')">
+      <router-view></router-view>
+      <copy-right class="copy"></copy-right>
+    </template>
+    <template v-else>
+      <BasicLayout />
+    </template>
   </div>
 </template>
 
 <style scoped>
 #app {
+  width: 100vw;
+  height: 100vh;
   background: url('@/assets/image/背景.png');
   background-position: center center;
   /* 背景图不平铺 */
@@ -36,5 +40,9 @@ router.beforeEach((to, from, next) => {
   background-attachment: fixed;
   /* 让背景图基于容器大小伸缩 */
   background-size: cover;
+}
+#app .copy {
+  position: absolute;
+  bottom: -10px;
 }
 </style>

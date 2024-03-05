@@ -33,6 +33,16 @@ const useUserStore = defineStore('user', {
           this.userRole = accessEnum.NOT_LOGIN
         }
       }
+    },
+    async getLoginUserAction() {
+      const res = await UserControllerService.getLoginUserUsingGet()
+      if (res.code === 0) {
+        // 存储用户信息
+        this.userName = <string>res.data?.userName
+        this.userRole = <string>res.data?.userRole
+        this.userAvatar = <string>res.data?.userAvatar
+        this.userProfile = <string>res.data?.userProfile
+      }
     }
   }
 })

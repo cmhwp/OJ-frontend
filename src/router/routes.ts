@@ -1,6 +1,19 @@
 import type { RouteRecordRaw } from 'vue-router'
+import accessEnum from '@/utils/access/accessEnum'
 
 export const routes: Array<RouteRecordRaw> = [
+  {
+    path: '/user',
+    name: '用户',
+    children: [
+      { path: 'login', name: '登录', component: () => import('../views/user/userLoginView.vue') },
+      {
+        path: 'register',
+        name: '注册',
+        component: () => import('../views/user/userRegisterView.vue')
+      }
+    ]
+  },
   {
     path: '/',
     redirect: '/home'
@@ -13,12 +26,18 @@ export const routes: Array<RouteRecordRaw> = [
   {
     path: '/question',
     name: '题库',
-    component: () => import('../views/notFound/not-foundView.vue')
+    component: () => import('../views/notFound/not-foundView.vue'),
+    meta: {
+      Auth: accessEnum.USER
+    }
   },
   {
     path: '/post',
     name: '讨论',
-    component: () => import('../views/notFound/not-foundView.vue')
+    component: () => import('../views/notFound/not-foundView.vue'),
+    meta: {
+      Auth: accessEnum.USER
+    }
   },
   {
     path: '/admin',
@@ -26,7 +45,17 @@ export const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/admin/adminView.vue'),
     meta: {
       //管理员
-      Auth: 'admin'
+      Auth: accessEnum.ADMIN
+    }
+  },
+  {
+    path: '/hide',
+    name: '隐藏',
+    component: () => import('../views/admin/adminView.vue'),
+    meta: {
+      //隐藏
+      show: false,
+      Auth: accessEnum.USER
     }
   },
   {
