@@ -3,6 +3,12 @@ import image from '@/assets/image/我家哥哥的蛋.png'
 import { reactive, ref } from 'vue'
 import SlideCode from '@/components/slideCode.vue'
 import useUserStore from '@/stores/user/user'
+import router from '@/router'
+import {
+  accountRules,
+  Account_Verification,
+  Password_Verification
+} from '@/utils/userRule/accountConfig'
 //表单信息
 const form = reactive({
   userAccount: '',
@@ -14,23 +20,27 @@ const handleUpdateMsg = async (msg: any) => {
   console.log('从子组件接收到的消息:', msg)
   if (msg.code === 1) {
     visible.value = false
-    const userAccount = 'cmh01'
-    const userPassword = '12345678cmh'
+    const { userAccount, userPassword } = form
     await loginState.loginAccountAction({ userAccount, userPassword }).then(() => {
       console.log('登录成功')
     })
   }
 }
 const handleLoginClick = () => {
-  console.log('Login button clicked') // 确认点击事件
-  if (form.userAccount && form.userPassword) {
-    visible.value = true
-  } else {
-    console.log('账号和密码不能为空')
+  if (Account_Verification.value && Password_Verification.value) {
+    console.log('Login button clicked') // 确认点击事件
+    if (form.userAccount && form.userPassword) {
+      visible.value = true
+    } else {
+      console.log('账号和密码不能为空')
+    }
   }
 }
 
 const handleRegisterClick = () => {
+  router.push({
+    path: 'register'
+  })
   console.log('Register button clicked')
 }
 </script>
@@ -41,7 +51,7 @@ const handleRegisterClick = () => {
     </div>
     <img class="logo" :src="image" alt="KUN OJ" />
     <a-form style="width: 100%; margin: 0 auto" label-align="left" auto-label-width :model="form">
-      <a-form-item field="userAccount">
+      <a-form-item field="userAccount" :rules="accountRules.userAccount">
         <a-input
           class="login-input"
           v-model="form.userAccount"
@@ -49,7 +59,7 @@ const handleRegisterClick = () => {
           allow-clear
         ></a-input>
       </a-form-item>
-      <a-form-item>
+      <a-form-item field="userPassword" :rules="accountRules.userPassword" ref="formRef">
         <a-input-password
           class="login-input"
           v-model="form.userPassword"
@@ -193,8 +203,7 @@ const handleRegisterClick = () => {
     rgb(36, 37, 40) !important;
 }
 #user-login .register-btn:hover {
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
-  rgb(255, 255, 255) !important;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), rgb(255, 255, 255) !important;
 }
 #user-login .user-protocol {
   display: flex;

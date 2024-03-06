@@ -14,7 +14,7 @@ export const routes: Array<RouteRecordRaw> = [
         component: () => import('../views/user/userRegisterView.vue')
       }
     ],
-    meta:{
+    meta: {
       show: false
     }
   },
@@ -25,7 +25,7 @@ export const routes: Array<RouteRecordRaw> = [
   {
     path: '/home',
     name: '主页',
-    component: () => import('../views/user/userLoginView.vue')
+    component: () => import('../views/notFound/not-foundView.vue')
   },
   {
     path: '/question',

@@ -2,13 +2,13 @@ import { defineStore } from 'pinia'
 import type { IAccount } from '@/type/user'
 import { UserControllerService } from '../../../generated'
 import accessEnum from '@/utils/access/accessEnum'
+import router from '@/router'
 interface IUserState {
   userName: string
   userRole: string
   userAvatar: string
   userProfile: string
 }
-
 const useUserStore = defineStore('user', {
   persist: true,
   state: (): IUserState => ({
@@ -29,6 +29,7 @@ const useUserStore = defineStore('user', {
           this.userRole = <string>res.data?.userRole
           this.userAvatar = <string>res.data?.userAvatar
           this.userProfile = <string>res.data?.userProfile
+          router.push('/')
         } else {
           this.userRole = accessEnum.NOT_LOGIN
         }
