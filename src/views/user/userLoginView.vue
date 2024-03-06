@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
 // import useUserStore from '@/stores/user/user'
 //
 // const loginState = useUserStore()
@@ -11,35 +10,42 @@ import { onMounted, ref } from 'vue'
 //   })
 // }
 import image from '@/assets/image/我家哥哥的蛋.png'
-import { reactive } from 'vue'
-import SlideVerify, { type SlideVerifyInstance } from 'vue3-slide-verify'
-import 'vue3-slide-verify/dist/style.css'
+import { reactive, ref } from 'vue'
+import SlideCode from '@/components/slideCode.vue'
+import useUserStore from '@/stores/user/user'
 //表单信息
 const form = reactive({
   userAccount: '',
   userPassword: ''
 })
-const msg = ref('')
-const block = ref<SlideVerifyInstance>()
-
-const onAgain = () => {
-  msg.value = '检测到非人为操作的哦！ try again'
-  // 刷新
-  block.value?.refresh()
+const visible = ref(false)
+const loginState = useUserStore()
+const handleUpdateMsg = (msg: any) => {
+  console.log('从子组件接收到的消息:', msg)
+  if (msg.code === 1) {
+    visible.value = false
+    const userAccount = 'cmh01'
+    const userPassword = '12345678cmh'
+    loginState.loginAccountAction({ userAccount, userPassword }).then(() => {
+      console.log('登录成功')
+    })
+  }
+}
+const handleLoginClick = () => {
+  console.log('Login button clicked') // 确认点击事件
+  if (form.userAccount && form.userPassword) {
+    visible.value = true
+  } else {
+    console.log('账号和密码不能为空')
+  }
 }
 
-const onSuccess = (times: number) => {
-  msg.value = `login success, 耗时${(times / 1000).toFixed(1)}s`
+const handleOk = () => {
+  visible.value = false
 }
-
-const onFail = () => {
-  msg.value = '验证不通过'
+const handleCancel = () => {
+  visible.value = false
 }
-const onRefresh = () => {
-  msg.value = '点击了刷新小图标'
-}
-const text = '向右滑动->'
-const accuracy = 2
 </script>
 <template>
   <div id="user-login">
@@ -51,7 +57,7 @@ const accuracy = 2
       <a-form-item field="userAccount">
         <a-input
           class="login-input"
-          :model="form.userAccount"
+          v-model="form.userAccount"
           placeholder="请输入账号"
           allow-clear
         ></a-input>
@@ -59,22 +65,22 @@ const accuracy = 2
       <a-form-item>
         <a-input-password
           class="login-input"
-          :model="form.userPassword"
+          v-model="form.userPassword"
           placeholder="请输入密码"
           allow-clear
         ></a-input-password>
       </a-form-item>
+      <a-modal
+        v-model:visible="visible"
+        title="滑动验证"
+        @ok="handleOk"
+        @cancel="handleCancel"
+        class="modal"
+      >
+        <slide-code @update-msg="handleUpdateMsg" class="slide-code"></slide-code>
+      </a-modal>
       <a-form-item>
-        <slide-verify
-          ref="block"
-          class="login-input"
-          :slider-text="text"
-          :accuracy="accuracy"
-          @again="onAgain"
-          @success="onSuccess"
-          @fail="onFail"
-          @refresh="onRefresh"
-        ></slide-verify>
+        <a-button type="primary" @click="handleLoginClick">立即登录</a-button>
       </a-form-item>
     </a-form>
   </div>
@@ -111,5 +117,23 @@ const accuracy = 2
   text-indent: 10px; /* 将文本和光标向右移动 5px */
   border-radius: 10px;
   border: 1px solid #e5e5e5; /* 设置边框颜色为灰色 */
+}
+#user-login .modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+#user-login .slide-code {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.slide-verify[data-v-f61c42f2] {
+  position: relative;
+  left: 15%;
 }
 </style>

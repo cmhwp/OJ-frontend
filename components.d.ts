@@ -50,6 +50,7 @@ declare module 'vue' {
     IconTried: typeof import('./src/components/calendar/icon/icon-tried.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SlideCode: typeof import('./src/components/slideCode.vue')['default']
     TheWelcome: typeof import('./src/components/TheWelcome.vue')['default']
     WelcomeItem: typeof import('./src/components/WelcomeItem.vue')['default']
   }
