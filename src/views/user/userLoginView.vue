@@ -1,14 +1,4 @@
 <script setup lang="ts">
-// import useUserStore from '@/stores/user/user'
-//
-// const loginState = useUserStore()
-// const doClick = () => {
-//   const userAccount = 'cmh01'
-//   const userPassword = '12345678cmh'
-//   loginState.loginAccountAction({ userAccount, userPassword }).then(() => {
-//     console.log('登录成功')
-//   })
-// }
 import image from '@/assets/image/我家哥哥的蛋.png'
 import { reactive, ref } from 'vue'
 import SlideCode from '@/components/slideCode.vue'
@@ -20,13 +10,13 @@ const form = reactive({
 })
 const visible = ref(false)
 const loginState = useUserStore()
-const handleUpdateMsg = (msg: any) => {
+const handleUpdateMsg = async (msg: any) => {
   console.log('从子组件接收到的消息:', msg)
   if (msg.code === 1) {
     visible.value = false
     const userAccount = 'cmh01'
     const userPassword = '12345678cmh'
-    loginState.loginAccountAction({ userAccount, userPassword }).then(() => {
+    await loginState.loginAccountAction({ userAccount, userPassword }).then(() => {
       console.log('登录成功')
     })
   }
@@ -40,11 +30,8 @@ const handleLoginClick = () => {
   }
 }
 
-const handleOk = () => {
-  visible.value = false
-}
-const handleCancel = () => {
-  visible.value = false
+const handleRegisterClick = () => {
+  console.log('Register button clicked')
 }
 </script>
 <template>
@@ -73,14 +60,63 @@ const handleCancel = () => {
       <a-modal
         v-model:visible="visible"
         title="滑动验证"
-        @ok="handleOk"
-        @cancel="handleCancel"
         class="modal"
+        :cancel-button-props="{ style: { display: 'none' } }"
+        :ok-button-props="{ style: { display: 'none' } }"
       >
         <slide-code @update-msg="handleUpdateMsg" class="slide-code"></slide-code>
       </a-modal>
+      <a-form-item style="display: flex">
+        <a-button
+          size="large"
+          type="dashed"
+          style="width: 168px; border-radius: 10px 0 0 10px"
+          @click="handleRegisterClick"
+          class="register-btn"
+        >
+          注册
+        </a-button>
+        <a-button
+          @click="handleLoginClick"
+          size="large"
+          type="primary"
+          html-type="submit"
+          class="login-btn"
+        >
+          登录
+        </a-button>
+      </a-form-item>
       <a-form-item>
-        <a-button type="primary" @click="handleLoginClick">立即登录</a-button>
+        <span class="login-text">账号密码登录</span>
+      </a-form-item>
+      <a-form-item>
+        <a-space :size="33">
+          <div style="border: 1px solid #e5e5e5; padding: 10px; border-radius: 50%">
+            <icon-qq :size="19" style="color: #4a9afd; cursor: pointer" />
+          </div>
+          <div style="border: 1px solid #e5e5e5; padding: 10px; border-radius: 50%">
+            <icon-github :size="19" style="color: #202020; cursor: pointer" />
+          </div>
+          <div style="border: 1px solid #e5e5e5; padding: 10px; border-radius: 50%">
+            <icon-weibo-circle-fill :size="19" style="color: #e90e24; cursor: pointer" />
+          </div>
+          <div style="border: 1px solid #e5e5e5; padding: 10px; border-radius: 50%">
+            <icon-wechat :size="19" style="color: #00ca00; cursor: pointer" />
+          </div>
+          <div style="border: 1px solid #e5e5e5; padding: 10px; border-radius: 50%">
+            <icon-more :size="19" />
+          </div>
+        </a-space>
+      </a-form-item>
+      <a-form-item class="user-protocol">
+        <div>
+          <span style="color: #3c3c4399; display: inline-block">注册或登录即代表您同意</span>
+          <span style="color: #262626bf; display: inline-block; cursor: pointer">《用户协议》</span>
+          <span style="color: #3c3c4399; display: inline-block">和</span>
+          <span style="color: #262626bf; display: inline-block; cursor: pointer">
+            《隐私协议》</span
+          >
+        </div>
       </a-form-item>
     </a-form>
   </div>
@@ -103,6 +139,11 @@ const handleCancel = () => {
   color: #4d535d;
   cursor: pointer;
 }
+#user-login .icon-qr-code:hover {
+  transform: scale(1.2);
+  color: #c7ccd7;
+  cursor: pointer;
+}
 #user-login .logo {
   display: flex;
   justify-content: center;
@@ -117,6 +158,7 @@ const handleCancel = () => {
   text-indent: 10px; /* 将文本和光标向右移动 5px */
   border-radius: 10px;
   border: 1px solid #e5e5e5; /* 设置边框颜色为灰色 */
+  background: rgba(255, 255, 255, 1);
 }
 #user-login .modal {
   display: flex;
@@ -134,6 +176,28 @@ const handleCancel = () => {
 }
 .slide-verify[data-v-f61c42f2] {
   position: relative;
-  left: 15%;
+  left: 18%;
+}
+#user-login .login-text {
+  display: flex;
+  align-items: flex-start;
+  color: #262626bf;
+}
+#user-login .login-btn {
+  width: 168px;
+  border-radius: 0 10px 10px 0;
+  background-color: rgb(36, 37, 40);
+}
+#user-login .login-btn:hover {
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.15)),
+    rgb(36, 37, 40) !important;
+}
+#user-login .register-btn:hover {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
+  rgb(255, 255, 255) !important;
+}
+#user-login .user-protocol {
+  display: flex;
+  justify-content: center;
 }
 </style>

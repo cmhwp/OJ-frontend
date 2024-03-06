@@ -1,7 +1,9 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div>Not-found</div>
+  <div>
+    <slide-code></slide-code>
+  </div>
 </template>
 
 <style scoped></style>

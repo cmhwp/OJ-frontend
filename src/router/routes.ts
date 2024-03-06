@@ -5,6 +5,7 @@ export const routes: Array<RouteRecordRaw> = [
   {
     path: '/user',
     name: '用户',
+    component: () => import('../layout/userLayout.vue'),
     children: [
       { path: 'login', name: '登录', component: () => import('../views/user/userLoginView.vue') },
       {
@@ -12,7 +13,10 @@ export const routes: Array<RouteRecordRaw> = [
         name: '注册',
         component: () => import('../views/user/userRegisterView.vue')
       }
-    ]
+    ],
+    meta:{
+      show: false
+    }
   },
   {
     path: '/',
