@@ -39,7 +39,7 @@ const handleLoginClick = () => {
 
 const handleRegisterClick = () => {
   router.push({
-    path: 'register'
+    path: 'userInfo'
   })
   console.log('Register button clicked')
 }

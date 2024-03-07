@@ -13,8 +13,7 @@
             height: 35px;
             margin-top: 8px;
           "
-        >
-        </div>
+        ></div>
       </a-layout-footer>
     </a-layout>
   </div>
@@ -23,9 +22,7 @@
 <style scoped>
 #user-layout {
   text-align: center;
-  background-image: url('../assets/image/背景.png');
-  background-size: cover;
-  background-color: #f7f8fa;
+  background-color: #fff;
 }
 
 #user-layout .header {
