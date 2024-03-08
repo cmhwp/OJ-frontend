@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-
+import type { FileItem } from '@arco-design/web-vue'
+import { UserControllerService } from '../../../generated'
+const uploadFile = ref<FileItem>()
 const userInfoForm = reactive({
   userName: '',
   userProfile: ''
@@ -15,16 +17,38 @@ const onPrev = () => {
     showEditIcon.value = true // 显示头像编辑图标
   }
 }
-const onNext = () => {
+let userAvatar =
+  'https://himg.bdimg.com/sys/portraitn/item/03cde88aa5e69cabe59682e58fa3e59abce7b396df8f'
+const onNext = async () => {
   current.value = Math.max(2, current.value + 1)
   disabled.value = true
   showEditIcon.value = false // 隐藏头像编辑图标
+  if (current.value === 3) {
+    const { userName, userProfile } = userInfoForm
+    userAvatar = uploadFile.value?.url ?? userAvatar
+    await UserControllerService.updateMyUserUsingPost({ userAvatar, userName, userProfile }).then(
+      (res) => {
+        console.log(res)
+      }
+    )
+  }
 }
 const setCurrent = (currentStep: number) => {
   current.value = currentStep
 }
-const userAvatar =
-  'https://himg.bdimg.com/sys/portraitn/item/03cde88aa5e69cabe59682e58fa3e59abce7b396df8f'
+
+const modalVisible = ref(false)
+const handleAvatarClick = () => {
+  console.log('头像被点击')
+  modalVisible.value = true
+}
+const handleUpdateModalVisible = (flag: boolean) => {
+  modalVisible.value = flag
+}
+const handleUpdateAvatar = (value: any) => {
+  uploadFile.value = value
+  console.log('上传头像成功', uploadFile.value)
+}
 </script>
 
 <template>
@@ -48,12 +72,23 @@ const userAvatar =
             <span>修改头像</span>
           </div>
           <div class="avatar-img">
-            <a-avatar trigger-type="mask" :size="64" :aria-disabled="disabled">
+            <a-avatar
+              trigger-type="mask"
+              :size="64"
+              :aria-disabled="disabled"
+              @click="handleAvatarClick"
+            >
               <img alt="avatar" :src="userAvatar" />
               <template #trigger-icon v-if="showEditIcon">
                 <IconEdit />
               </template>
             </a-avatar>
+            <avatar-upload-modal
+              v-show="modalVisible"
+              :modalVisible="modalVisible"
+              @update-modalVisible="handleUpdateModalVisible"
+              @update-avatar="handleUpdateAvatar"
+            ></avatar-upload-modal>
           </div>
         </div>
         <a-form
