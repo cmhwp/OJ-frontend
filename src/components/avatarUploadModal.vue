@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import type { FileItem } from '@arco-design/web-vue'
+import { FileControllerService } from '../../generated'
 const visible = ref(false)
 const file = ref()
 const onChange = (fileList: FileItem[], fileItem: FileItem) => {
@@ -26,9 +27,20 @@ watch(
 )
 const emit = defineEmits(['update-modalVisible', 'update-avatar'])
 const handleOk = () => {
-  console.log(file.value)
-  emit('update-modalVisible', false)
-  emit('update-avatar', file.value)
+  if (file.value && file.value.file) {
+    FileControllerService.uploadFileUsingPost(file.value.file, 'user_avatar')
+      .then((response) => {
+        console.log('上传成功', response)
+        // 在这里触发 update-avatar 事件
+        emit('update-avatar', response.data)
+      })
+      .catch((error) => {
+        console.error('上传失败', error)
+      })
+      .finally(() => {
+        emit('update-modalVisible', false)
+      })
+  }
 }
 
 const handleCancel = () => {
@@ -46,7 +58,7 @@ const handleCancel = () => {
       @cancel="handleCancel"
     >
       <a-upload
-        action="http://localhost:5173"
+        :action="'api/file/upload'"
         :fileList="file ? [file] : []"
         :show-file-list="false"
         @change="onChange"

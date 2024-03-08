@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import type { FileItem } from '@arco-design/web-vue'
 import { UserControllerService } from '../../../generated'
-const uploadFile = ref<FileItem>()
+const uploadFile = ref<string>()
 const userInfoForm = reactive({
   userName: '',
   userProfile: ''
@@ -17,20 +16,24 @@ const onPrev = () => {
     showEditIcon.value = true // 显示头像编辑图标
   }
 }
-let userAvatar =
+const userAvatar = ref<string | undefined>(
   'https://himg.bdimg.com/sys/portraitn/item/03cde88aa5e69cabe59682e58fa3e59abce7b396df8f'
+)
+
 const onNext = async () => {
   current.value = Math.max(2, current.value + 1)
   disabled.value = true
   showEditIcon.value = false // 隐藏头像编辑图标
   if (current.value === 3) {
     const { userName, userProfile } = userInfoForm
-    userAvatar = uploadFile.value?.url ?? userAvatar
-    await UserControllerService.updateMyUserUsingPost({ userAvatar, userName, userProfile }).then(
-      (res) => {
-        console.log(res)
-      }
-    )
+    userAvatar.value = uploadFile.value ?? userAvatar.value
+    await UserControllerService.updateMyUserUsingPost({
+      userAvatar: userAvatar.value,
+      userName,
+      userProfile
+    }).then((res) => {
+      console.log(res)
+    })
   }
 }
 const setCurrent = (currentStep: number) => {
@@ -48,21 +51,19 @@ const handleUpdateModalVisible = (flag: boolean) => {
 const handleUpdateAvatar = (value: any) => {
   uploadFile.value = value
   console.log('上传头像成功', uploadFile.value)
+  userAvatar.value = uploadFile.value // 更新 userAvatar 的值
 }
 </script>
 
 <template>
   <div class="user-info-view">
-    <div class="user-inform">
-      <span>请按照提示完善个人信息</span>
-    </div>
     <div class="user-pending">
       <a-steps changeable :current="current" @change="setCurrent">
         <!--todo
         步骤条点击
         -->
-        <a-step class="step" description="This is a description" disabled>Succeeded</a-step>
-        <a-step description="This is a description" disabled>Processing</a-step>
+        <a-step class="step" description="请填写个人信息" disabled>个人信息</a-step>
+        <a-step description="确认无误后点击下一步" disabled>确认个人信息</a-step>
       </a-steps>
     </div>
     <div>
@@ -96,6 +97,7 @@ const handleUpdateAvatar = (value: any) => {
           label-align="left"
           auto-label-width
           :model="userInfoForm"
+          class="user-form"
         >
           <a-form-item>
             <a-input
@@ -128,10 +130,10 @@ const handleUpdateAvatar = (value: any) => {
                   @click="onPrev"
                   class="back-btn"
                 >
-                  <IconLeft /> Back
+                  <IconLeft /> 上一步
                 </a-button>
                 <a-button type="primary" :disabled="current >= 3" @click="onNext" class="next-btn">
-                  Next <IconRight />
+                  下一步 <IconRight />
                 </a-button>
               </a-space>
             </div>
@@ -146,16 +148,11 @@ const handleUpdateAvatar = (value: any) => {
 .user-info-view {
   position: absolute;
   width: 60%;
-  height: 50%;
+  height: 60%;
   border-radius: 20px;
   box-shadow: 0 1px 25px rgba(0, 0, 0, 0.1);
   padding: 24px 32px;
   background-color: #ffffff;
-}
-.user-info-view .user-inform {
-  position: relative;
-  width: 100%;
-  bottom: 100px;
 }
 .user-info-view .avatar-inform > span {
   color: #86909c;
@@ -165,13 +162,18 @@ const handleUpdateAvatar = (value: any) => {
   width: 100%;
   height: 10%;
   box-sizing: border-box;
-  top: -10px;
+  top: 20px;
+}
+.user-info-view .user-form {
+  position: relative;
+  top: 30px;
 }
 .user-info-view .user-input-content .user-avatar {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 175px;
+  margin-top: 30px;
 }
 .user-info-view .user-input {
   text-indent: 10px; /* 将文本和光标向右移动 5px */
