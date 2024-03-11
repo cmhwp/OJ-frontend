@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    AiEditor: typeof import('./src/components/aiEditor.vue')['default']
     ALayout: typeof import('@arco-design/web-vue')['Layout']
     ALayoutContent: typeof import('@arco-design/web-vue')['LayoutContent']
     ALayoutFooter: typeof import('@arco-design/web-vue')['LayoutFooter']
@@ -17,6 +18,7 @@ declare module 'vue' {
     CalendarHeader: typeof import('./src/components/calendar/calendar-header.vue')['default']
     CalendarTable: typeof import('./src/components/calendar/calendar-table.vue')['default']
     CalendarWeek: typeof import('./src/components/calendar/calendar-week.vue')['default']
+    CodeEditor: typeof import('./src/components/codeEditor.vue')['default']
     CopyRight: typeof import('./src/components/copyRight.vue')['default']
     GlobalHeader: typeof import('./src/components/globalHeader.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
@@ -49,6 +51,9 @@ declare module 'vue' {
     IconTheme: typeof import('./src/components/calendar/icon/icon-theme.vue')['default']
     IconTooling: typeof import('./src/components/icons/IconTooling.vue')['default']
     IconTried: typeof import('./src/components/calendar/icon/icon-tried.vue')['default']
+    MdEditor: typeof import('./src/components/mdEditor.vue')['default']
+    MdView: typeof import('./src/components/mdView.vue')['default']
+    MonacoEditor: typeof import('./src/components/monacoEditor.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SlideCode: typeof import('./src/components/slideCode.vue')['default']

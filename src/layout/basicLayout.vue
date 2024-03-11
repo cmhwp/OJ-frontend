@@ -27,16 +27,14 @@
 }
 
 #basic-layout .footer {
-  margin-bottom: 16px;
   bottom: 0;
   left: 0;
   right: 0;
   text-align: center;
-  box-shadow: #eee 0 -2px 5px;
 }
 #basic-layout .copy {
-  position: absolute;
-  bottom: -10px;
+  position: relative;
+  bottom: 0px;
 }
 </style>
 

@@ -35,7 +35,6 @@ onMounted(() => {
   background-color: #fff;
 }
 #app .copy {
-  position: absolute;
-  bottom: -10px;
+  display: flex;
 }
 </style>
