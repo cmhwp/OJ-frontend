@@ -76,6 +76,23 @@ export const routes: Array<RouteRecordRaw> = [
     }
   },
   {
+    path: '/manage/question',
+    name: '题目管理',
+    component: () => import('../views/question/manageQuestionView.vue'),
+    meta: {
+      access: accessEnum.ADMIN
+    }
+  },
+  {
+    path: '/update/question',
+    name: '更新题目',
+    component: () => import('../views/question/addQuestionView.vue'),
+    meta: {
+      access: accessEnum.ADMIN,
+      show: false
+    }
+  },
+  {
     path: '/:pathMatch(.*)*',
     component: () => import('../views/notFound/not-foundView.vue')
   }

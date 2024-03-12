@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
-import categories from '@/utils/question/questionUtils'
-import { useRoute, useRouter } from 'vue-router'
-import { QuestionControllerService, QuestionSubmitControllerService } from '../../../generated'
+import { onMounted, ref } from 'vue'
+import { QuestionControllerService } from '../../../generated'
 import message from '@arco-design/web-vue/es/message'
-let form = reactive({
+import { useRoute, useRouter } from 'vue-router'
+
+const route = useRoute()
+const router = useRouter()
+// 如果页面地址包含 update，视为更新页面
+const updatePage = route.path.includes('update')
+import categories from '@/utils/question/questionUtils'
+
+let form = ref({
   title: '',
   tags: [],
   difficulty: 1,
@@ -26,56 +32,61 @@ let form = reactive({
     }
   ]
 })
+
 const options = [
   { label: '简单', value: 1 },
   { label: '中等', value: 2 },
   { label: '困难', value: 3 }
 ]
-const route = useRoute()
-const router = useRouter()
+
 /**
- * 新增判题用例
+ * 根据题目 id 获取老的数据
  */
-const handleAdd = () => {
-  form.judgeCase.push({
-    input: '',
-    output: ''
-  })
+const loadData = async () => {
+  const id = route.query.id
+  if (!id) {
+    return
+  }
+  const res = await QuestionControllerService.getQuestionByIdUsingGet(id as any)
+  if (res.code === 0) {
+    form.value = res.data as any
+    // json 转 js 对象
+    if (!form.value.judgeCase) {
+      form.value.judgeCase = [
+        {
+          input: '',
+          output: ''
+        }
+      ]
+    } else {
+      form.value.judgeCase = JSON.parse(form.value.judgeCase as any)
+    }
+    if (!form.value.judgeConfig) {
+      form.value.judgeConfig = {
+        memoryLimit: 1000,
+        stackLimit: 1000,
+        timeLimit: 1000
+      }
+    } else {
+      form.value.judgeConfig = JSON.parse(form.value.judgeConfig as any)
+    }
+    if (!form.value.tags) {
+      form.value.tags = []
+    } else {
+      form.value.tags = JSON.parse(form.value.tags as any)
+    }
+  } else {
+    message.error('加载失败，' + res.message)
+  }
 }
-/**
- * 删除判题用例
- */
-const handleDelete = (index: number) => {
-  form.judgeCase.splice(index, 1)
-}
+onMounted(() => {
+  loadData()
+})
 
-const onContentChange = (value: string) => {
-  form.content = value
-}
-
-const onFrontendCodeChange = (value: string) => {
-  form.frontendCode = value
-}
-
-const onBackendCodeChange = (value: string) => {
-  form.backendCode = value
-}
-
-const onLogicCodeChange = (value: string) => {
-  form.logicCode = value
-}
-const onAnswerChange = (value: string) => {
-  form.answer = value
-}
-// 如果页面地址包含 update，视为更新页面
-const updatePage = route.path.includes('update')
-/**
- * 提交
- */
 const doSubmit = async () => {
-  //区分更新还是创建
+  // 区分更新还是创建
   if (updatePage) {
-    const res = await QuestionSubmitControllerService.updateQuestionSubmitUsingPost({ ...form })
+    const res = await QuestionControllerService.updateQuestionUsingPost(form.value)
     if (res.code === 0) {
       message.success('更新成功')
       await router.push('/menage/question')
@@ -83,7 +94,7 @@ const doSubmit = async () => {
       message.error('更新失败，' + res.message)
     }
   } else {
-    const res = await QuestionControllerService.addQuestionUsingPost({ ...form })
+    const res = await QuestionControllerService.addQuestionUsingPost(form.value)
     if (res.code === 0) {
       message.success('创建成功')
       router.go(-1)
@@ -91,6 +102,42 @@ const doSubmit = async () => {
       message.error('创建失败:' + res.message)
     }
   }
+}
+
+/**
+ * 新增判题用例
+ */
+const handleAdd = () => {
+  form.value.judgeCase.push({
+    input: '',
+    output: ''
+  })
+}
+
+/**
+ * 删除判题用例
+ */
+const handleDelete = (index: number) => {
+  form.value.judgeCase.splice(index, 1)
+}
+
+const onContentChange = (value: string) => {
+  form.value.content = value
+}
+
+const onFrontendCodeChange = (value: string) => {
+  form.value.frontendCode = value
+}
+
+const onBackendCodeChange = (value: string) => {
+  form.value.backendCode = value
+}
+
+const onLogicCodeChange = (value: string) => {
+  form.value.logicCode = value
+}
+const onAnswerChange = (value: string) => {
+  form.value.answer = value
 }
 </script>
 

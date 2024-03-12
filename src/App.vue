@@ -20,7 +20,6 @@ onMounted(() => {
   <div id="app">
     <template v-if="route.path.startsWith('/user') || route.path.startsWith('/view')">
       <router-view></router-view>
-      <copy-right class="copy"></copy-right>
     </template>
     <template v-else>
       <BasicLayout />
@@ -30,11 +29,6 @@ onMounted(() => {
 
 <style scoped>
 #app {
-  width: 100vw;
-  height: 100vh;
   background-color: #fff;
-}
-#app .copy {
-  display: flex;
 }
 </style>

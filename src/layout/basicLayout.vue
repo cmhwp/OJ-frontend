@@ -21,6 +21,10 @@
 #basic-layout .header {
   box-shadow: #eee 1px 1px 5px;
   z-index: 999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 
 #basic-layout .content {
