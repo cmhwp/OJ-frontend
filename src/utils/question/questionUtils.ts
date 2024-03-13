@@ -80,6 +80,10 @@ const categories: Category[] = [
   {
     label: '数学',
     options: ['数学', '数论', '几何', '组合']
+  },
+  {
+    label: '其他',
+    options: ['数据库', '设计', '数据流', '脑筋急转弯', '交互', '迭代器', '多线程', 'Shell']
   }
 ]
 

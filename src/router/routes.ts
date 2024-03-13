@@ -35,7 +35,7 @@ export const routes: Array<RouteRecordRaw> = [
   {
     path: '/question',
     name: '题库',
-    component: () => import('../views/notFound/not-foundView.vue'),
+    component: () => import('../views/question/questionsView.vue'),
     meta: {
       Auth: accessEnum.USER
     }
@@ -55,16 +55,6 @@ export const routes: Array<RouteRecordRaw> = [
     meta: {
       //管理员
       Auth: accessEnum.ADMIN
-    }
-  },
-  {
-    path: '/hide',
-    name: '隐藏',
-    component: () => import('../views/admin/adminView.vue'),
-    meta: {
-      //隐藏
-      show: false,
-      Auth: accessEnum.USER
     }
   },
   {
@@ -89,6 +79,16 @@ export const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/question/addQuestionView.vue'),
     meta: {
       access: accessEnum.ADMIN,
+      show: false
+    }
+  },
+  {
+    path: '/do/question/:id/:category?/:questionSubmitId?',
+    name: '在线做题',
+    component: () => import('../views/question/doQuestionView.vue'),
+    props: true,
+    meta: {
+      access: accessEnum.USER,
       show: false
     }
   },

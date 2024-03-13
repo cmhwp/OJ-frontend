@@ -13,19 +13,18 @@
 </template>
 
 <script setup lang="ts">
-import calendarService from "@/views/calendar/calendar-service";
-import { ICalendarItem } from "calendar";
-import { isEqualDate } from "@/views/calendar/getMonthDateList";
-import CalendarDate from "@/views/calendar/calendar-date.vue";
+import { type ICalendarItem } from 'calendar'
+import calendarService from '@/components/calendar/calendar-service'
+import { isEqualDate } from '@/components/calendar/getMonthDateList'
 
-const dateList = calendarService.monthDateList;
+const dateList = calendarService.monthDateList
 
 function isDateSelected(dateItem: ICalendarItem) {
   // console.log(
   //   "日期:",
   //   isEqualDate(dateItem.date, calendarService.selectedDate.value)
   // );
-  return isEqualDate(dateItem.date, calendarService.selectedDate.value);
+  return isEqualDate(dateItem.date, calendarService.selectedDate.value)
 }
 </script>
 

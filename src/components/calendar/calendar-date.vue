@@ -7,7 +7,7 @@
         'date-today': dateItem.isToday,
         'date-curr-month': dateItem.isCurrMonth,
         'date-prev-month': dateItem.isPrevMonth,
-        'date-next-month': dateItem.isNextMonth,
+        'date-next-month': dateItem.isNextMonth
       }"
     >
       {{ dateItem.day }}
@@ -16,13 +16,13 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from "vue";
-import { ICalendarItem } from "calendar";
+import { defineProps } from 'vue'
+import { type ICalendarItem } from './calendar'
 
 defineProps<{
-  dateItem: ICalendarItem;
-  isSelected: boolean;
-}>();
+  dateItem: ICalendarItem
+  isSelected: boolean
+}>()
 </script>
 
 <style scoped>

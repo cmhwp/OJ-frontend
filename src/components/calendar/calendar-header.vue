@@ -11,19 +11,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import calendarService from "@/views/calendar/calendar-service";
-import IconArrowsLeft from "@/views/calendar/icon/icon-arrows-left.vue";
-import IconArrowsRight from "@/views/calendar/icon/icon-arrows-right.vue";
+import { computed } from 'vue'
+import calendarService from '@/components/calendar/calendar-service'
 
 const monthText = computed(() => {
-  const selectedDate = calendarService.selectedDate.value;
+  const selectedDate = calendarService.selectedDate.value
 
-  const year = selectedDate.getFullYear();
-  const month = `${selectedDate.getMonth() + 1}`.padStart(2, "0");
+  const year = selectedDate.getFullYear()
+  const month = `${selectedDate.getMonth() + 1}`.padStart(2, '0')
 
-  return `${year}年${month}月`;
-});
+  return `${year}年${month}月`
+})
 </script>
 
 <style scoped>

@@ -12,27 +12,25 @@
 </template>
 
 <script setup lang="ts">
-import IconCollapseOn from "@/views/calendar/icon/icon-collapse-on.vue";
-import IconCollapseOff from "@/views/calendar/icon/icon-collapse-off.vue";
-import { defineProps, withDefaults, defineEmits, ref } from "vue";
+import { defineProps, withDefaults, defineEmits, ref } from 'vue'
 
 interface ICollapseProps {
-  collapsed: boolean;
+  collapsed: boolean
 }
 
 const props = withDefaults(defineProps<ICollapseProps>(), {
-  collapsed: false,
-});
+  collapsed: false
+})
 
 const emitEvent = defineEmits<{
-  (event: "collapse", isCollapsed: boolean): void;
-}>();
+  (event: 'collapse', isCollapsed: boolean): void
+}>()
 
-const isCollapsed = ref(props.collapsed);
+const isCollapsed = ref(props.collapsed)
 
 function toggleCollapse() {
-  isCollapsed.value = !isCollapsed.value;
-  emitEvent("collapse", isCollapsed.value);
+  isCollapsed.value = !isCollapsed.value
+  emitEvent('collapse', isCollapsed.value)
 }
 </script>
 <style scoped>

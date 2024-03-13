@@ -102,6 +102,7 @@ const doSubmit = async () => {
       message.error('创建失败:' + res.message)
     }
   }
+  console.log(form.value)
 }
 
 /**
@@ -332,7 +333,7 @@ const onAnswerChange = (value: string) => {
 }
 
 .form-container {
-  margin-top: 30px;
+  margin-top: 100px;
   width: 100%; /* 根据需要调整宽度 */
 }
 </style>

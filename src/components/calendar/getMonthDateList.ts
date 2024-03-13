@@ -1,18 +1,18 @@
-import { ICalendarItem } from "calendar";
+import { type ICalendarItem } from './calendar'
 
 // 每天的毫秒数
-const DayMS = 24 * 60 * 60 * 1000;
+const DayMS = 24 * 60 * 60 * 1000
 
 export function isEqualDate(a: Date, b: Date) {
   return (
     a.getFullYear() === b.getFullYear() &&
     a.getMonth() === b.getMonth() &&
     a.getDate() === b.getDate()
-  );
+  )
 }
 
 export function isEqualMonth(a: Date, b: Date) {
-  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth();
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth()
 }
 
 /**
@@ -20,7 +20,7 @@ export function isEqualMonth(a: Date, b: Date) {
  * @param date
  */
 export function getFirstDate(date: Date): Date {
-  return new Date(date.getFullYear(), date.getMonth(), 1);
+  return new Date(date.getFullYear(), date.getMonth(), 1)
 }
 
 /**
@@ -28,7 +28,7 @@ export function getFirstDate(date: Date): Date {
  * @param date
  */
 export function getLastDate(date: Date): Date {
-  return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+  return new Date(date.getFullYear(), date.getMonth() + 1, 0)
 }
 
 /**
@@ -38,21 +38,21 @@ export function getLastDate(date: Date): Date {
  * @param date
  */
 export function getPrevTailDateList(date: Date) {
-  const dateList: Array<ICalendarItem> = [];
-  const firstDate = getFirstDate(date);
-  const firstDateTime = firstDate.getTime();
-  const firstDateWeek = firstDate.getDay();
+  const dateList: Array<ICalendarItem> = []
+  const firstDate = getFirstDate(date)
+  const firstDateTime = firstDate.getTime()
+  const firstDateWeek = firstDate.getDay()
 
   for (let i = 0; i < firstDateWeek; i++) {
-    const currDate = new Date(firstDateTime - (i + 1) * DayMS);
+    const currDate = new Date(firstDateTime - (i + 1) * DayMS)
 
     dateList.unshift({
       date: currDate,
       isPrevMonth: true,
-      day: currDate.getDate(),
-    });
+      day: currDate.getDate()
+    })
   }
-  return dateList;
+  return dateList
 }
 
 /**
@@ -62,21 +62,21 @@ export function getPrevTailDateList(date: Date) {
  * @param appendWeek 是否多获取一周
  */
 export function getNextHeadDateList(date: Date, appendWeek: boolean) {
-  const dateList: Array<ICalendarItem> = [];
-  const lastDate = getLastDate(date);
-  const lastDateTime = lastDate.getTime();
-  const lastDateWeek = lastDate.getDay();
+  const dateList: Array<ICalendarItem> = []
+  const lastDate = getLastDate(date)
+  const lastDateTime = lastDate.getTime()
+  const lastDateWeek = lastDate.getDay()
 
   for (let i = 0; i < 6 - lastDateWeek + (appendWeek ? 7 : 0); i++) {
-    const currDate = new Date(lastDateTime + (i + 1) * DayMS);
+    const currDate = new Date(lastDateTime + (i + 1) * DayMS)
 
     dateList.push({
       date: currDate,
       isNextMonth: true,
-      day: currDate.getDate(),
-    });
+      day: currDate.getDate()
+    })
   }
-  return dateList;
+  return dateList
 }
 
 /**
@@ -86,69 +86,69 @@ export function getNextHeadDateList(date: Date, appendWeek: boolean) {
  * @param date
  */
 export function getCurrMonthDateList(date: Date) {
-  const dateList: Array<ICalendarItem> = [];
-  const firstDate = getFirstDate(date);
-  const lastDate = getLastDate(date);
+  const dateList: Array<ICalendarItem> = []
+  const firstDate = getFirstDate(date)
+  const lastDate = getLastDate(date)
 
-  const today = new Date();
+  const today = new Date()
 
   for (let i = 1; i < lastDate.getDate() + 1; i++) {
-    const currDate = new Date(firstDate);
-    currDate.setDate(i);
+    const currDate = new Date(firstDate)
+    currDate.setDate(i)
 
     dateList.push({
       date: currDate,
       isCurrMonth: true,
       day: currDate.getDate(),
-      isToday: isEqualDate(currDate, today),
-    });
+      isToday: isEqualDate(currDate, today)
+    })
   }
-  return dateList;
+  return dateList
 }
 
 function getMonthDateList(date: Date) {
-  const prevDateList = getPrevTailDateList(date);
-  const currDateList = getCurrMonthDateList(date);
-  const appendWeek = prevDateList.length + currDateList.length <= 35;
-  const nextDateList = getNextHeadDateList(date, appendWeek);
+  const prevDateList = getPrevTailDateList(date)
+  const currDateList = getCurrMonthDateList(date)
+  const appendWeek = prevDateList.length + currDateList.length <= 35
+  const nextDateList = getNextHeadDateList(date, appendWeek)
 
-  return prevDateList.concat(currDateList).concat(nextDateList);
+  return prevDateList.concat(currDateList).concat(nextDateList)
 }
 
 export function getNextMonthDate(date: Date) {
-  let nextYear = date.getFullYear();
-  let nextMonth = date.getMonth() + 1 + 1;
-  let nextDay = date.getDate();
+  let nextYear = date.getFullYear()
+  let nextMonth = date.getMonth() + 1 + 1
+  let nextDay = date.getDate()
 
   if (nextMonth === 13) {
-    nextYear += 1;
-    nextMonth = 1;
+    nextYear += 1
+    nextMonth = 1
   }
 
-  const lastDay = new Date(nextYear, nextMonth, 0).getDate();
+  const lastDay = new Date(nextYear, nextMonth, 0).getDate()
 
   if (nextDay > lastDay) {
-    nextDay = lastDay;
+    nextDay = lastDay
   }
-  return new Date(`${nextYear}/${nextMonth}/${nextDay}`);
+  return new Date(`${nextYear}/${nextMonth}/${nextDay}`)
 }
 
 export function getPrevMonthDate(date: Date) {
-  let prevYear = date.getFullYear();
-  let prevMonth = date.getMonth() + 1 - 1;
-  let prevDay = date.getDate();
+  let prevYear = date.getFullYear()
+  let prevMonth = date.getMonth() + 1 - 1
+  let prevDay = date.getDate()
 
   if (prevMonth === 0) {
-    prevYear -= 1;
-    prevMonth = 12;
+    prevYear -= 1
+    prevMonth = 12
   }
 
-  const lastDay = new Date(prevYear, prevMonth, 0).getDate();
+  const lastDay = new Date(prevYear, prevMonth, 0).getDate()
 
   if (prevDay > lastDay) {
-    prevDay = lastDay;
+    prevDay = lastDay
   }
-  return new Date(`${prevYear}/${prevMonth}/${prevDay}`);
+  return new Date(`${prevYear}/${prevMonth}/${prevDay}`)
 }
 
-export default getMonthDateList;
+export default getMonthDateList

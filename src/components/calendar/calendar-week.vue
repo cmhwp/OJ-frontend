@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-const WeekList = ["Sun", "Mon", "Tue", "Wed", "Tue", "Fri", "Sat"];
+const WeekList = ['Sun', 'Mon', 'Tue', 'Wed', 'Tue', 'Fri', 'Sat']
 </script>
 <style scoped>
 #calendar-week {

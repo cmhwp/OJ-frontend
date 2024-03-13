@@ -18,7 +18,7 @@ onMounted(() => {
 
 <template>
   <div id="app">
-    <template v-if="route.path.startsWith('/user') || route.path.startsWith('/view')">
+    <template v-if="route.path.startsWith('/user') || route.path.startsWith('/do')">
       <router-view></router-view>
     </template>
     <template v-else>

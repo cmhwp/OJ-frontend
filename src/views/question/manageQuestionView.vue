@@ -57,30 +57,15 @@
             <div class="demo-basic">
               <button class="transparent-btn" @click="doDifficulty(1)">
                 <span style="color: #00af9b">简单</span>
-                <img
-                  v-if="tag === 1"
-                  :src="trueImage"
-                  alt=""
-                  class="small-image"
-                />
+                <img v-if="tag === 1" :src="trueImage" alt="" class="small-image" />
               </button>
               <button class="transparent-btn" @click="doDifficulty(2)">
                 <span style="color: #ffb800">中等</span>
-                <img
-                  v-if="tag === 2"
-                  :src="trueImage"
-                  alt=""
-                  class="small-image"
-                />
+                <img v-if="tag === 2" :src="trueImage" alt="" class="small-image" />
               </button>
               <button class="transparent-btn" @click="doDifficulty(3)">
                 <span style="color: #ff2d55">困难</span>
-                <img
-                  v-if="tag === 3"
-                  :src="trueImage"
-                  alt=""
-                  class="small-image"
-                />
+                <img v-if="tag === 3" :src="trueImage" alt="" class="small-image" />
               </button>
             </div>
           </template>
