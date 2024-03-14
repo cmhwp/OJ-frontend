@@ -1,5 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router'
 import accessEnum from '@/utils/access/accessEnum'
+import AccessEnum from '@/utils/access/accessEnum'
 
 export const routes: Array<RouteRecordRaw> = [
   {
@@ -89,6 +90,24 @@ export const routes: Array<RouteRecordRaw> = [
     props: true,
     meta: {
       access: accessEnum.USER,
+      show: false
+    }
+  },
+  {
+    path: '/personal/center',
+    name: '用户中心',
+    component: () => import('../views/user/userSettingView.vue'),
+    meta: {
+      access: AccessEnum.USER,
+      show: false
+    }
+  },
+  {
+    path: '/personal/homepage',
+    name: '个人主页',
+    component: () => import('../views/user/userCenterView.vue'),
+    meta: {
+      access: AccessEnum.USER,
       show: false
     }
   },

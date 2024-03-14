@@ -1052,13 +1052,7 @@ import {
 import message from '@arco-design/web-vue/es/message'
 import { useRoute, useRouter } from 'vue-router'
 import CalendarService from '@/components/calendar/calendar-service'
-import Image1 from '@/assets/image/对号.png'
-import Image2 from '@/assets/image/横杠.png'
-import Image3 from '@/assets/image/尝试过.png'
-import Image4 from '@/assets/image/对.png'
-import Image5 from '@/assets/image/白对.png'
-import Image6 from '@/assets/image/通过.png'
-import Image7 from '@/assets/image/随机.png'
+import { Image1, Image2, Image3, Image4, Image5, Image6, Image7 } from '@/assets/image/imgExport'
 CalendarService.initMonthDateList()
 
 const router = useRouter()

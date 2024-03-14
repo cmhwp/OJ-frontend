@@ -60,6 +60,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SearchInput: typeof import('./src/components/question/SearchInput.vue')['default']
+    SetCenter: typeof import('./src/components/setCenter.vue')['default']
     SlideCode: typeof import('./src/components/slideCode.vue')['default']
     TagCategory: typeof import('./src/components/question/TagCategory.vue')['default']
     TagFilter: typeof import('./src/components/question/TagFilter.vue')['default']
