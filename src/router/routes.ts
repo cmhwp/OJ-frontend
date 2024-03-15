@@ -37,17 +37,11 @@ export const routes: Array<RouteRecordRaw> = [
     path: '/question',
     name: '题库',
     component: () => import('../views/question/questionsView.vue'),
-    meta: {
-      Auth: accessEnum.USER
-    }
   },
   {
     path: '/post',
     name: '讨论',
     component: () => import('../views/notFound/not-foundView.vue'),
-    meta: {
-      Auth: accessEnum.USER
-    }
   },
   {
     path: '/admin',
@@ -63,7 +57,7 @@ export const routes: Array<RouteRecordRaw> = [
     name: '创建题目',
     component: () => import('../views/question/addQuestionView.vue'),
     meta: {
-      access: accessEnum.ADMIN
+      Auth: accessEnum.ADMIN
     }
   },
   {
@@ -71,7 +65,7 @@ export const routes: Array<RouteRecordRaw> = [
     name: '题目管理',
     component: () => import('../views/question/manageQuestionView.vue'),
     meta: {
-      access: accessEnum.ADMIN
+      Auth: accessEnum.ADMIN
     }
   },
   {
@@ -79,7 +73,7 @@ export const routes: Array<RouteRecordRaw> = [
     name: '更新题目',
     component: () => import('../views/question/addQuestionView.vue'),
     meta: {
-      access: accessEnum.ADMIN,
+      Auth: accessEnum.ADMIN,
       show: false
     }
   },
@@ -89,7 +83,7 @@ export const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/question/doQuestionView.vue'),
     props: true,
     meta: {
-      access: accessEnum.USER,
+      Auth: accessEnum.USER,
       show: false
     }
   },
@@ -98,7 +92,7 @@ export const routes: Array<RouteRecordRaw> = [
     name: '用户中心',
     component: () => import('../views/user/userSettingView.vue'),
     meta: {
-      access: AccessEnum.USER,
+      Auth: AccessEnum.USER,
       show: false
     }
   },
@@ -107,7 +101,7 @@ export const routes: Array<RouteRecordRaw> = [
     name: '个人主页',
     component: () => import('../views/user/userCenterView.vue'),
     meta: {
-      access: AccessEnum.USER,
+      Auth: AccessEnum.USER,
       show: false
     }
   },

@@ -11,6 +11,7 @@ import Image10 from './积分.png'
 import Image11 from './笔记本.png'
 import Image12 from './进度管理.png'
 import Image13 from './做题分析.png'
+import Image14 from './我家哥哥的蛋.png'
 export {
   Image1,
   Image2,
@@ -24,5 +25,6 @@ export {
   Image10,
   Image11,
   Image12,
-  Image13
+  Image13,
+  Image14
 }

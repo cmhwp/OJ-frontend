@@ -18,7 +18,7 @@ router.beforeEach(async (to, from, next) => {
 
   if (!loginUser || !loginUser.userRole || loginUser.userRole.value === AccessEnum.NOT_LOGIN) {
     if (needAccess !== AccessEnum.NOT_LOGIN) {
-      next('/login')
+      next('/user/login')
     } else {
       next()
     }

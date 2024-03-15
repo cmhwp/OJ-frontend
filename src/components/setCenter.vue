@@ -3,6 +3,7 @@ import { Image8, Image9, Image10, Image11, Image12, Image13 } from '@/assets/ima
 import { ref } from 'vue'
 import useUserStore from '@/stores/user/user'
 import router from '@/router'
+import { UserControllerService } from '../../generated'
 const userAvatar = ref(
   'https://himg.bdimg.com/sys/portraitn/item/03cde88aa5e69cabe59682e58fa3e59abce7b396df8f'
 )
@@ -18,10 +19,17 @@ const goHome = () => {
   })
 }
 //账号设置
-const goCenter = () => {}
+const goCenter = () => {
+  router.push({
+    path: '/personal/center'
+  })
+}
 
 //退出登录
-const doLogout = () => {}
+const doLogout = async () => {
+  const userStore = useUserStore()
+  userStore.logoutAction()
+}
 </script>
 
 <template>
