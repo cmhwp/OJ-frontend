@@ -12,6 +12,7 @@ declare module 'vue' {
     ALayoutContent: typeof import('@arco-design/web-vue')['LayoutContent']
     ALayoutFooter: typeof import('@arco-design/web-vue')['LayoutFooter']
     ALayoutHeader: typeof import('@arco-design/web-vue')['LayoutHeader']
+    AStar: typeof import('@arco-design/web-vue')['Star']
     AvatarUploadModal: typeof import('./src/components/avatarUploadModal.vue')['default']
     CalendarCollapse: typeof import('./src/components/calendar/calendar-collapse.vue')['default']
     CalendarDate: typeof import('./src/components/calendar/calendar-date.vue')['default']

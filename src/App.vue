@@ -28,7 +28,4 @@ onMounted(() => {
 </template>
 
 <style scoped>
-#app {
-  background-color: #fff;
-}
 </style>

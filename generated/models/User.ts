@@ -3,10 +3,18 @@
 /* tslint:disable */
 /* eslint-disable */
 export type User = {
+    address?: string;
+    birthday?: string;
+    company?: string;
     createTime?: string;
+    gender?: number;
+    gitHubName?: string;
     id?: number;
     isDelete?: number;
     mpOpenId?: string;
+    position?: string;
+    school?: string;
+    tags?: string;
     unionId?: string;
     updateTime?: string;
     userAccount?: string;
@@ -15,5 +23,6 @@ export type User = {
     userPassword?: string;
     userProfile?: string;
     userRole?: string;
+    websites?: string;
 };
 

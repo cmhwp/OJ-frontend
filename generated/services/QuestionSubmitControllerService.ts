@@ -18,7 +18,6 @@ import type { QuestionSubmitUpdateRequest } from '../models/QuestionSubmitUpdate
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-import type {UnwrapRef} from "vue";
 export class QuestionSubmitControllerService {
     /**
      * deleteQuestionSubmit
@@ -260,20 +259,8 @@ export class QuestionSubmitControllerService {
      * @throws ApiError
      */
     public static updateQuestionSubmitUsingPost(
-      questionSubmitUpdateRequest: {
-        difficulty: UnwrapRef<number>;
-        backendCode: UnwrapRef<string>;
-        languages: UnwrapRef<string>;
-        answer: UnwrapRef<string>;
-        judgeCase: UnwrapRef<{ output: string; input: string }[]>;
-        logicCode: UnwrapRef<string>;
-        judgeConfig: UnwrapRef<{ timeLimit: number; stackLimit: number; memoryLimit: number }>;
-        title: UnwrapRef<string>;
-        frontendCode: UnwrapRef<string>;
-        content: UnwrapRef<string>;
-        tags: UnwrapRef<any[]>
-      },
-    ): CancelablePromise<any> {
+        questionSubmitUpdateRequest: QuestionSubmitUpdateRequest,
+    ): CancelablePromise<BaseResponse_boolean_ | any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/question_submit/update',

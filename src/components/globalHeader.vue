@@ -65,7 +65,7 @@ console.log('userInfo', userInfo)
 const smallColor = ref('#737373')
 
 //开关
-const handleSwitchClick = (index) => {
+const handleSwitchClick = (index: number) => {
   if (index === 0) {
     document.body.setAttribute('arco-theme', 'dark')
   } else if (index === 1) {
@@ -122,7 +122,7 @@ const handleSwitchClick = (index) => {
             </div>
           </template>
         </a-trigger>
-        <div v-if="userInfo.id === ''">
+        <div v-if="JSON.stringify(userInfo.id.value) === '-1'">
           <span class="registration-text" @click="doRegister">注册</span>
           <a-divider direction="vertical" size="0" :margin="5" />
           <span style="color: #0000008c; font-size: 14px">或</span>

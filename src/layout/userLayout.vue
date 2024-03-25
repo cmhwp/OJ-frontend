@@ -22,7 +22,6 @@
 <style scoped>
 #user-layout {
   text-align: center;
-  background-color: #fff;
 }
 
 #user-layout .header {

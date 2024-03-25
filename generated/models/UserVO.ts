@@ -3,11 +3,20 @@
 /* tslint:disable */
 /* eslint-disable */
 export type UserVO = {
+    address?: string;
+    birthday?: string;
+    company?: string;
     createTime?: string;
+    gender?: number;
+    gitHubName?: string;
     id?: number;
+    position?: string;
+    school?: string;
+    tags?: string;
     userAvatar?: string;
     userName?: string;
     userProfile?: string;
     userRole?: string;
+    websites?: string;
 };
 

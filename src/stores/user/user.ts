@@ -10,15 +10,33 @@ interface IUserState {
   userRole: string
   userAvatar: string
   userProfile: string
+  gender: number
+  birthday: string
+  address: string
+  websites: string
+  gitHubName: string
+  school: string
+  company: string
+  tags: string[]
+  position: string
 }
 const useUserStore = defineStore('user', {
   persist: true,
   state: (): IUserState => ({
-    id: '',
+    id: -1,
     userName: '',
     userRole: '',
     userAvatar: '',
-    userProfile: ''
+    userProfile: '',
+    gender: 0,
+    birthday: '',
+    address: '',
+    websites: '',
+    gitHubName: '',
+    school: '',
+    company: '',
+    tags: [],
+    position: ''
   }),
   actions: {
     async loginAccountAction(payload: IAccount) {
@@ -33,6 +51,16 @@ const useUserStore = defineStore('user', {
           this.userRole = <string>res.data?.userRole
           this.userAvatar = <string>res.data?.userAvatar
           this.userProfile = <string>res.data?.userProfile
+          this.gender = <number>res.data?.gender
+          this.birthday = <string>res.data?.birthday
+          this.address = <string>res.data?.address
+          this.websites = <string>res.data?.websites
+          this.gitHubName = <string>res.data?.gitHubName
+          this.school = <string>res.data?.school
+          this.company = <string>res.data?.company
+          this.tags = <string[]>(res.data?.tags as unknown)
+          this.position = <string>res.data?.position
+          // 存储token
           router.push('/')
         } else {
           this.userRole = accessEnum.NOT_LOGIN
@@ -48,6 +76,15 @@ const useUserStore = defineStore('user', {
         this.userRole = <string>res.data?.userRole
         this.userAvatar = <string>res.data?.userAvatar
         this.userProfile = <string>res.data?.userProfile
+        this.gender = <number>res.data?.gender
+        this.birthday = <string>res.data?.birthday
+        this.address = <string>res.data?.address
+        this.websites = <string>res.data?.websites
+        this.gitHubName = <string>res.data?.gitHubName
+        this.school = <string>res.data?.school
+        this.company = <string>res.data?.company
+        this.tags = <string[]>(res.data?.tags as unknown)
+        this.position = <string>res.data?.position
       }
     },
     resetState() {

@@ -17,12 +17,7 @@
           align-items: center;
         "
       >
-        <img
-          class="logo"
-          :src="Image14"
-          alt="LOGO"
-          @click="goToHomePage"
-        />
+        <img class="logo" :src="Image14" alt="LOGO" @click="goToHomePage" />
         <a-divider direction="vertical" />
         <a-button
           :style="buttonStyle"
@@ -1758,7 +1753,7 @@ import {
 } from '../../../generated'
 import { useRoute, useRouter } from 'vue-router'
 import useUserStore from '@/stores/user/user'
-import {Image14} from "@/assets/image/imgExport";
+import { Image14 } from '@/assets/image/imgExport'
 
 const route = useRoute()
 
