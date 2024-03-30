@@ -30,12 +30,21 @@ const props = withDefaults(defineProps<Props>(), {
 
 <template>
   <div class="md-editor">
-    <Editor :value="value" :mode="mode" :plugins="plugins" @change="handleChange" />
+    <Editor
+      :value="value"
+      :mode="mode"
+      :plugins="plugins"
+      @change="handleChange"
+      style="height: 600px"
+    />
   </div>
 </template>
 
-<style scoped>
+<style>
 .bytemd-toolbar-icon.bytemd-tippy.bytemd-tippy-right:last-child {
   display: none;
+}
+.bytemd {
+  height: 100%;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <AiEditorView :value="props.question.answer" />
+  <ai-editor-view :value="props.question.answer" />
 </template>
 
 <script setup lang="ts">

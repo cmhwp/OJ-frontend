@@ -5,11 +5,13 @@
 import type { UserVO } from './UserVO';
 export type PostVO = {
     content?: string;
+    cover?: string;
     createTime?: string;
     favourNum?: number;
     hasFavour?: boolean;
     hasThumb?: boolean;
     id?: number;
+    summary?: string;
     tagList?: Array<string>;
     thumbNum?: number;
     title?: string;

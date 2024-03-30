@@ -7,6 +7,7 @@ export type UserUpdateMyRequest = {
     birthday?: string;
     company?: string;
     gender?: number;
+    gitHubName?: string;
     id?: number;
     position?: string;
     school?: string;
@@ -14,5 +15,6 @@ export type UserUpdateMyRequest = {
     userAvatar?: string;
     userName?: string;
     userProfile?: string;
+    websites?: string;
 };
 

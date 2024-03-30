@@ -7,6 +7,7 @@ import useUserStore from '@/stores/user/user'
 import { storeToRefs } from 'pinia'
 import checkAccess from '@/utils/access/checkAccess'
 import accessEnum from '@/utils/access/accessEnum'
+import user from "@/stores/user/user";
 
 const selectedKeys = ref<string[]>(['/'])
 const router = useRouter()
@@ -44,10 +45,13 @@ const updateRouteList = () => {
     // 检查用户角色是否匹配路由要求的权限
     return checkAccess(userInfo.userRole.value as accessEnum, route.meta?.Auth as accessEnum)
   })
-  if (userInfo.userAvatar.value) {
-    avatar.value = userInfo.userAvatar.value
-  }
 }
+const userAvatar = computed(() => {
+  if (userInfo.userAvatar) {
+    return userInfo.userAvatar.value
+  }
+  return avatar.value
+})
 watch(() => userInfo.userRole.value, updateRouteList)
 updateRouteList()
 const doRegister = () => {
@@ -132,7 +136,7 @@ const handleSwitchClick = (index: number) => {
         <div v-else style="margin-left: 10px">
           <a-trigger :popup-translate="[-130, 20]" :popup-visible="show">
             <a-avatar :size="27" style="cursor: pointer" @click="show = !show">
-              <img alt="avatar" :src="avatar" />
+              <img alt="avatar" :src="userAvatar" />
             </a-avatar>
             <template #content>
               <SetCenter @click="show = !show" />

@@ -39,7 +39,7 @@
               </button>
               <button class="transparent-btn" @click="doStatus('Memory Limit Exceeded')">
                 <span>超出内存限制</span>
-                <img v-if="status === '超出内存限制'" :src="IMage4" alt="" class="small-image" />
+                <img v-if="status === '超出内存限制'" :src="Image4" alt="" class="small-image" />
               </button>
               <button class="transparent-btn" @click="doStatus('Output Limit Exceeded')">
                 <span>超出输出限制</span>
@@ -51,7 +51,7 @@
               </button>
               <button class="transparent-btn" @click="doStatus('Execution Error')">
                 <span>执行出错</span>
-                <img v-if="status === '执行出错'" :src="IMage4" alt="" class="small-image" />
+                <img v-if="status === '执行出错'" :src="Image4" alt="" class="small-image" />
               </button>
               <button class="transparent-btn" @click="doStatus('python')">
                 <span>内部出错</span>
@@ -89,15 +89,15 @@
               </button>
               <button class="transparent-btn" @click="doLanguage('cpp')">
                 <span>C ++</span>
-                <img v-if="language === 'cpp'" :src="IMage4" alt="" class="small-image" />
+                <img v-if="language === 'cpp'" :src="Image4" alt="" class="small-image" />
               </button>
               <button class="transparent-btn" @click="doLanguage('java')">
                 <span>Java</span>
-                <img v-if="language === 'java'" :src="IMage4" alt="" class="small-image" />
+                <img v-if="language === 'java'" :src="Image4" alt="" class="small-image" />
               </button>
               <button class="transparent-btn" @click="doLanguage('python')">
                 <span>Python</span>
-                <img v-if="language === 'python'" :src="IMage4" alt="" class="small-image" />
+                <img v-if="language === 'python'" :src="Image4" alt="" class="small-image" />
               </button>
             </div>
           </template>
@@ -254,7 +254,7 @@
           }"
         >
           <template #content><span style="color: black; font-size: 13px">已复制</span></template>
-          <img :src="IMage1" alt="" style="margin-right: 5px" />
+          <img :src="Image1" alt="" style="margin-right: 5px" />
         </a-tooltip>
       </div>
     </div>
@@ -384,13 +384,13 @@
               </div>
             </div>
             <div style="width: 100%" v-if="isShowBox">
-              <time-e-charts
+              <time-echarts
                 :value="questionSubmit?.judgeInfo.time"
                 :x-data="timeList"
                 :series-data="timePercentageList"
                 :language="questionSubmit?.language"
               />
-              <time-min-e-charts
+              <time-min-echarts
                 style="margin-left: 52px"
                 :value="questionSubmit?.judgeInfo.time"
                 :x-data="timeList"
@@ -398,13 +398,13 @@
               />
             </div>
             <div style="width: 100%" v-else>
-              <memory-e-charts
+              <memory-echarts
                 :value="questionSubmit?.judgeInfo.memory"
                 :x-data="memoryList"
                 :series-data="memoryPercentageList"
                 :language="questionSubmit?.language"
               />
-              <memory-min-e-charts
+              <memory-min-echarts
                 style="margin-left: 52px"
                 :x-data="memoryList"
                 :series-data="memoryPercentageList"
@@ -526,7 +526,10 @@
 </template>
 
 <script setup lang="ts">
-import { QuestionSubmitControllerService, QuestionSubmitQueryRequest } from '../../../generated'
+import {
+  QuestionSubmitControllerService,
+  type QuestionSubmitQueryRequest
+} from '../../../generated'
 import message from '@arco-design/web-vue/es/message'
 import { ref, watch, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'

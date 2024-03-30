@@ -36,12 +36,12 @@ export const routes: Array<RouteRecordRaw> = [
   {
     path: '/question',
     name: '题库',
-    component: () => import('../views/question/questionsView.vue'),
+    component: () => import('../views/question/questionsView.vue')
   },
   {
     path: '/post',
     name: '讨论',
-    component: () => import('../views/notFound/not-foundView.vue'),
+    component: () => import('../views/post/postView.vue')
   },
   {
     path: '/admin',
@@ -100,6 +100,24 @@ export const routes: Array<RouteRecordRaw> = [
     path: '/personal/homepage',
     name: '个人主页',
     component: () => import('../views/user/userCenterView.vue'),
+    meta: {
+      Auth: AccessEnum.USER,
+      show: false
+    }
+  },
+  {
+    path: '/user/addPost',
+    name: '发帖',
+    component: () => import('../views/post/addPostView.vue'),
+    meta: {
+      Auth: AccessEnum.USER,
+      show: false
+    }
+  },
+  {
+    path: '/post/detail',
+    name: '发帖详情',
+    component: () => import('../views/post/postDetail.vue'),
     meta: {
       Auth: AccessEnum.USER,
       show: false

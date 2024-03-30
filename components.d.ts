@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AiEditor: typeof import('./src/components/aiEditor.vue')['default']
+    AiEditorView: typeof import('./src/components/aiEditorView.vue')['default']
     ALayout: typeof import('@arco-design/web-vue')['Layout']
     ALayoutContent: typeof import('@arco-design/web-vue')['LayoutContent']
     ALayoutFooter: typeof import('@arco-design/web-vue')['LayoutFooter']
@@ -55,6 +56,8 @@ declare module 'vue' {
     IconTried: typeof import('./src/components/calendar/icon/icon-tried.vue')['default']
     MdEditor: typeof import('./src/components/mdEditor.vue')['default']
     MdView: typeof import('./src/components/mdView.vue')['default']
+    MemoryEcharts: typeof import('./src/components/judgeEcharts/memoryEcharts.vue')['default']
+    MemoryMinEcharts: typeof import('./src/components/judgeEcharts/memoryMinEcharts.vue')['default']
     MonacoEditor: typeof import('./src/components/monacoEditor.vue')['default']
     QuestionAnswer: typeof import('./src/components/question/questionAnswer.vue')['default']
     QuestionDescript: typeof import('./src/components/question/questionDescript.vue')['default']
@@ -70,6 +73,8 @@ declare module 'vue' {
     TagFilter: typeof import('./src/components/question/TagFilter.vue')['default']
     TagList: typeof import('./src/components/tagList.vue')['default']
     TheWelcome: typeof import('./src/components/TheWelcome.vue')['default']
+    TimeEcharts: typeof import('./src/components/judgeEcharts/timeEcharts.vue')['default']
+    TimeMinEcharts: typeof import('./src/components/judgeEcharts/timeMinEcharts.vue')['default']
     WelcomeItem: typeof import('./src/components/WelcomeItem.vue')['default']
   }
 }

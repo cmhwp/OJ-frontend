@@ -13,6 +13,7 @@ const avatar = computed(() => {
   return loginUser.userAvatar
 })
 const toast = () => {
+  modalVisible.value = true
   console.log('更换头像')
 }
 console.log(name)
@@ -113,7 +114,8 @@ let formRef = ref({
   school: '',
   company: '',
   tags: [] as string[],
-  position: ''
+  position: '',
+  userAvatar: ''
 })
 const updateInfo = async () => {
   await loginUser.getLoginUserAction()
@@ -139,8 +141,28 @@ watchEffect(() => {
 const handleSubmit = async () => {
   formRef.value.tags = tags.map((item) => item.code)
   await UserControllerService.updateMyUserUsingPost(formRef.value).then((res) => {
-    console.log(res)
+    if (res.code === 0) {
+      message.success('修改成功')
+    } else {
+      message.error(res.msg)
+    }
   })
+}
+
+const uploadFile = ref<string>()
+const modalVisible = ref(false)
+const handleUpdateModalVisible = (flag: boolean) => {
+  modalVisible.value = flag
+}
+const handleUpdateAvatar = (value: any) => {
+  uploadFile.value = value
+  console.log('上传头像成功', uploadFile.value)
+  typeof uploadFile.value === 'string'
+    ? (loginUser.userAvatar = uploadFile.value)
+    : loginUser.userAvatar
+  typeof uploadFile.value === 'string'
+    ? (formRef.value.userAvatar = uploadFile.value)
+    : loginUser.userAvatar
 }
 onMounted(() => {
   updateInfo()
@@ -213,7 +235,7 @@ onMounted(() => {
               </div>
               <div class="user-driver"></div>
               <div class="user-item">
-                <a class="user-item-a">
+                <a class="user-item-a user-item-a-text">
                   <icon-user class="user-item-icon" />
                   个人信息
                 </a>
@@ -252,6 +274,12 @@ onMounted(() => {
                   <IconEdit :size="15" />
                 </template>
               </a-avatar>
+              <avatar-upload-modal
+                v-show="modalVisible"
+                :modalVisible="modalVisible"
+                @update-modalVisible="handleUpdateModalVisible"
+                @update-avatar="handleUpdateAvatar"
+              ></avatar-upload-modal>
               <a-form-item class="a-form-item-nick">
                 <div class="nick-input-div">
                   <label class="nick-name">昵称</label>
@@ -851,5 +879,8 @@ onMounted(() => {
 .btn .a-btn:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(38 154 79);
+}
+.user-item-a-text {
+  color: rgba(10, 132, 255, 1) !important;
 }
 </style>

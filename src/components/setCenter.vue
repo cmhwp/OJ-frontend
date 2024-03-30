@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Image8, Image9, Image10, Image11, Image12, Image13 } from '@/assets/image/imgExport'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import useUserStore from '@/stores/user/user'
 import router from '@/router'
 import { UserControllerService } from '../../generated'
@@ -8,9 +8,12 @@ const userAvatar = ref(
   'https://himg.bdimg.com/sys/portraitn/item/03cde88aa5e69cabe59682e58fa3e59abce7b396df8f'
 )
 const loginUser = useUserStore()
-if (loginUser.userAvatar) {
-  userAvatar.value = loginUser.userAvatar
-}
+const avatar = computed(() => {
+  if (loginUser.userAvatar) {
+    return loginUser.userAvatar
+  }
+  return userAvatar.value
+})
 const userName = loginUser.userName
 //用户中心
 const goHome = () => {
@@ -44,7 +47,7 @@ const doLogout = async () => {
   >
     <a-space direction="vertical" :size="10" style="color: black">
       <div class="avatar-wrapper">
-        <img :src="userAvatar" alt="" class="round-avatar" @click="goHome" />
+        <img :src="avatar" alt="" class="round-avatar" @click="goHome" />
         <div style="display: flex; flex-direction: column; align-items: flex-start; width: 180px">
           <span @click="goHome" class="username">{{ userName }}</span>
           <a-progress :percent="0.2" :show-text="false" />

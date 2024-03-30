@@ -13,6 +13,7 @@ export type PostQueryRequest = {
     searchText?: string;
     sortField?: string;
     sortOrder?: string;
+    summary?: string;
     tags?: Array<string>;
     title?: string;
     userId?: number;

@@ -21,6 +21,7 @@
     "@highlightjs/vue-plugin": "^2.1.0",
     "aieditor": "^1.0.0-rc.7",
     "axios": "^1.6.7",
+    "echarts": "^5.5.0",
     "highlight.js": "^11.9.0",
     "js-cookie": "^3.0.5",
     "moment": "^2.30.1",
