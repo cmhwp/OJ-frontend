@@ -12,6 +12,26 @@ const dataList = async () => {
     console.log(resData)
   })
 }
+const colors = [
+  'red',
+  'orangered',
+  'orange',
+  'gold',
+  'lime',
+  'green',
+  'cyan',
+  'blue',
+  'arcoblue',
+  'purple',
+  'pinkpurple',
+  'magenta',
+  'gray'
+]
+const getRandomColor = () => {
+  const randomIndex = Math.floor(Math.random() * colors.length)
+  return colors[randomIndex]
+}
+
 watch(
   () => route.query.id,
   () => {
@@ -26,7 +46,7 @@ onMounted(() => {
 <template>
   <div id="post-detail">
     <a-row>
-      <a-col :span="13">
+      <a-col :span="15">
         <div class="post-detail-total">
           <div class="css-1132auf-Header-Breadcrumb">
             <div class="post-detail-header">
@@ -78,16 +98,166 @@ onMounted(() => {
               <ai-editor-view :value="resData?.content"></ai-editor-view>
             </div>
           </div>
+          <div style="margin-top: 12px"></div>
+          <div class="css-jgmohy-QuestionActionsContainer">
+            <div class="css-1ukmnx3-ReactionWraper">
+              <div style="display: flex">
+                <div class="css-4t1g65-ReactionUpvoteBtnWrapper">
+                  <icon-thumb-up
+                    style="
+                      padding: 2px;
+                      height: 24px;
+                      width: 24px;
+                      border-radius: 100%;
+                      color: rgba(60, 60, 67, 0.6);
+                    "
+                  />
+                  <span class="thumbNum-text">{{ resData?.thumbNum }}</span>
+                </div>
+              </div>
+            </div>
+            <div
+              style="
+                margin-right: 8px;
+                height: 12px;
+                border-left-width: 1px;
+                border-left-style: solid;
+                border-color: rgba(0, 10, 32, 0.11);
+              "
+            ></div>
+            <button
+              class="css-1c66zjl-BaseButtonComponent-OperationButton-CompactOperationButton-CompactOperationOrangeButton"
+            >
+              <icon-star style="width: 20px; height: 20px" />
+              <span>收藏</span>
+            </button>
+            <button class="css-1kpbure-BaseButtonComponent-OperationButton">
+              <icon-launch style="width: 20px; height: 20px" />
+              <span>分享</span>
+            </button>
+            <div style="margin-left: auto">
+              <button class="reply-btn">
+                <icon-edit style="height: 16px; width: 16px" />
+                <span style="margin-left: 4px">回复讨论</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="reply-total">
+          <!--TODO-->
+          <div class="total-text">共 24 个回复</div>
+          <button class="sort-btn">
+            <span>最新</span>
+            <icon-sort style="height: 16px; width: 16px; margin-left: 2px" />
+          </button>
+        </div>
+        <div class="reply-detail-total">
+          <!--TODO-->
+          <div class="reply-detail">
+            <div class="reply-detail-top">
+              <div class="reply-detail-top-left">
+                <a-avatar
+                  class="reply-detail-avatar"
+                  :image-url="`https://assets.leetcode.cn/aliyun-lc-upload/users/tian-se-zheng-hao/avatar_1629539440.png?x-oss-process=image%2Fresize%2Ch_44%2Cw_44%2Fformat%2Cwebp`"
+                ></a-avatar>
+                <div class="reply-detail-nick">
+                  <span>小寒</span>
+                </div>
+              </div>
+              <div class="reply-detail-top-right">
+                <div class="reply-detail-time">
+                  <span style="margin: 0px 8px">{{
+                    moment(resData?.createTime).format('YYYY-MM-DD')
+                  }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="reply-detail-middle">
+              <md-view style="min-height: 50px; margin-bottom: 10px"></md-view>
+            </div>
+            <div class="reply-detail-bottom">
+              <div class="reply-detail-bottom-left">
+                <div style="margin-left: 10px">
+                  <div class="css-1ukmnx3-ReactionWraper">
+                    <div style="display: flex">
+                      <div class="css-4t1g65-ReactionUpvoteBtnWrapper">
+                        <icon-thumb-up
+                          style="
+                            padding: 2px;
+                            height: 24px;
+                            width: 24px;
+                            border-radius: 100%;
+                            color: rgba(60, 60, 67, 0.6);
+                          "
+                        />
+                        <span class="thumbNum-text">{{ resData?.thumbNum }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  style="
+                    margin-right: 8px;
+                    height: 12px;
+                    border-left-width: 1px;
+                    border-left-style: solid;
+                    border-color: rgba(0, 10, 32, 0.11);
+                  "
+                ></div>
+                <button class="reply">
+                  <icon-message style="width: 20px; height: 20px" />
+                  <span style="margin-left: 4px">回复</span>
+                </button>
+                <button
+                  class="css-1c66zjl-BaseButtonComponent-OperationButton-CompactOperationButton-CompactOperationOrangeButton"
+                >
+                  <icon-star style="width: 20px; height: 20px" />
+                  <span>收藏</span>
+                </button>
+                <button class="css-1kpbure-BaseButtonComponent-OperationButton">
+                  <icon-launch style="width: 20px; height: 20px" />
+                  <span>分享</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </a-col>
-      <a-col :span="5"></a-col>
+      <a-col :span="4">
+        <div class="post-tag">
+          <div style="width: 100%">
+            <div class="post-tag-top-detail">
+              <div class="post-tag-top-title">收藏次数</div>
+              <span>{{ resData?.favourNum }}</span>
+            </div>
+            <div class="post-tag-top-detail">
+              <div class="post-tag-top-title">点赞次数</div>
+              <span>{{ resData?.thumbNum }}</span>
+            </div>
+          </div>
+          <div
+            style="width: 100%; height: 1px; background: rgba(240, 240, 240, 1); margin: 15px 0px"
+          ></div>
+          <div class="relative-tag">相关标签</div>
+          <div class="post-tag-detail">
+            <a-tag
+              v-for="(tag, index) of resData?.tagList"
+              :key="index"
+              :color="getRandomColor()"
+              style="border-radius: 10px; margin-right: 5px"
+            >
+              {{ tag }}
+            </a-tag>
+          </div>
+        </div>
+      </a-col>
     </a-row>
   </div>
 </template>
 
 <style scoped>
 #post-detail {
-  margin: 90px 20px 20px 20px;
+  margin: 90px 10px 30px 100px;
 }
 .post-detail-total {
   background: rgba(255, 255, 255, 1);
@@ -217,5 +387,321 @@ onMounted(() => {
   background-color: rgb(255, 255, 255);
   box-sizing: border-box;
   color: rgb(26, 26, 26);
+}
+.css-jgmohy-QuestionActionsContainer {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  border-top: 1px solid rgba(0, 10, 32, 0.11);
+  position: sticky;
+  margin: 0px -16px;
+  padding: 14px 16px;
+  border-radius: 0px 0px 8px 8px;
+  bottom: 0px;
+  background-color: rgba(255, 255, 255, 1);
+}
+.css-1ukmnx3-ReactionWraper {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  margin-right: 16px;
+}
+.css-4t1g65-ReactionUpvoteBtnWrapper {
+  display: inline-flex;
+  height: 24px;
+  border-radius: 14px;
+  -webkit-box-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  align-items: center;
+  cursor: pointer;
+  color: rgba(60, 60, 67, 0.6);
+  font-weight: 500;
+}
+.css-4t1g65-ReactionUpvoteBtnWrapper :hover {
+  background-color: rgba(45, 181, 93, 0.08);
+  color: rgba(45, 181, 93, 1);
+}
+.thumbNum-text {
+  color: rgba(60, 60, 67, 0.6);
+  margin-left: 4px;
+  font-size: 14px;
+}
+.css-1c66zjl-BaseButtonComponent-OperationButton-CompactOperationButton-CompactOperationOrangeButton {
+  border: none;
+  border-radius: 3px;
+  line-height: 20px;
+  outline: none;
+  user-select: none;
+  text-decoration: none;
+  display: inline-flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  opacity: 1;
+  background-color: transparent;
+  padding: 0px;
+  font-size: 14px;
+  vertical-align: text-bottom;
+  margin: 0px 8px;
+  transition: none 0s ease 0s;
+  color: rgba(60, 60, 67, 0.6);
+}
+.css-1c66zjl-BaseButtonComponent-OperationButton-CompactOperationButton-CompactOperationOrangeButton:hover {
+  color: rgba(255, 161, 22, 1);
+}
+.css-1kpbure-BaseButtonComponent-OperationButton {
+  border: none;
+  border-radius: 3px;
+  line-height: 20px;
+  outline: none;
+  user-select: none;
+  text-decoration: none;
+  display: inline-flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  transition-property: color, box-shadow, background-color, opacity;
+  transition-duration: 0.3s;
+  overflow: hidden;
+  cursor: pointer;
+  opacity: 1;
+  background-color: transparent;
+  padding: 0px;
+  margin: 0px 8px;
+  color: rgba(140, 140, 140, 1);
+  font-size: 14px;
+  vertical-align: text-bottom;
+}
+.css-1kpbure-BaseButtonComponent-OperationButton:hover {
+  color: rgba(10, 132, 255, 1);
+}
+.reply-btn {
+  border: none;
+  border-radius: 8px;
+  outline: none;
+  user-select: none;
+  text-decoration: none;
+  display: inline-flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  transition-property: color, box-shadow, background-color, opacity;
+  transition-duration: 0.3s;
+  overflow: hidden;
+  cursor: pointer;
+  opacity: 1;
+  background-color: rgba(45, 181, 93, 1);
+  color: rgba(255, 255, 255, 1);
+  font-size: 14px;
+  margin-left: auto;
+  margin-right: 16px;
+  line-height: 22px;
+  padding: 5px 16px !important;
+  font-weight: 500;
+}
+.reply-btn:hover {
+  background-color: rgba(38.25, 153.85, 79.05, 1);
+}
+.reply-total {
+  background: rgba(255, 255, 255, 1);
+  box-shadow:
+    0px 1px 2px rgba(0, 0, 0, 0.1),
+    0px 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 10px;
+  padding: 10px 15px;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: justify;
+  justify-content: space-between;
+  border-radius: 8px;
+  width: 100%;
+}
+.reply-total .total-text {
+  font-size: 12px;
+  color: rgba(191, 191, 191, 1);
+}
+.reply-total .sort-btn {
+  border: none;
+  border-radius: 3px;
+  line-height: 20px;
+  outline: none;
+  user-select: none;
+  text-decoration: none;
+  display: inline-flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  transition-property: color, box-shadow, background-color, opacity;
+  transition-duration: 0.3s;
+  overflow: hidden;
+  cursor: pointer;
+  opacity: 1;
+  background-color: transparent;
+  font-size: 12px;
+  padding: 0px;
+  color: rgba(140, 140, 140, 1);
+}
+.reply-detail-total {
+  width: 100%;
+  margin-bottom: 10px;
+}
+.reply-detail-total .reply-detail {
+  background: rgba(255, 255, 255, 1);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 16px 16px 0px;
+  width: 100%;
+}
+.reply-detail-top {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  height: 24px;
+}
+.reply-detail-top-left {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+}
+.reply-detail-avatar {
+  flex-shrink: 0;
+  -webkit-box-flex: 0;
+  flex-grow: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 100%;
+  border: 0px;
+  background: rgba(240, 240, 240, 1);
+  margin-right: 10px;
+  cursor: pointer;
+}
+.reply-detail-nick {
+  display: inline-flex;
+  -webkit-box-align: center;
+  align-items: center;
+}
+.reply-detail-nick > span {
+  color: rgba(140, 140, 140, 1);
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+}
+.reply-detail-top-right {
+  margin-left: auto;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+}
+.reply-detail-time {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  padding: 0px;
+  margin-left: 12px;
+  color: rgba(191, 191, 191, 1);
+}
+.reply-detail-middle {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.reply-detail-bottom {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: justify;
+  justify-content: space-between;
+  padding: 12px 0px 16px;
+  border-top: 1px solid rgba(240, 240, 240, 1);
+}
+.reply-detail-bottom-left {
+  margin-left: -9px;
+  border: none;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  position: sticky;
+  bottom: 0px;
+  z-index: 1000;
+}
+.reply {
+  border: none;
+  border-radius: 3px;
+  line-height: 20px;
+  outline: none;
+  user-select: none;
+  text-decoration: none;
+  display: inline-flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  transition-property: color, box-shadow, background-color, opacity;
+  transition-duration: 0.3s;
+  overflow: hidden;
+  cursor: pointer;
+  opacity: 1;
+  background-color: transparent;
+  padding: 0px;
+  margin: 0px 8px;
+  color: rgba(140, 140, 140, 1);
+  font-size: 14px;
+  vertical-align: text-bottom;
+}
+.reply:hover {
+  color: rgba(10, 132, 255, 1);
+}
+.post-tag {
+  margin-left: 50px;
+  background: rgba(255, 255, 255, 1);
+  box-shadow:
+    0px 1px 2px rgba(0, 0, 0, 0.1),
+    0px 2px 8px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  padding: 20px 15px;
+  font-size: 14px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+.post-tag-top-detail {
+  margin-bottom: 15px;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: justify;
+  justify-content: space-between;
+  line-height: 22px;
+}
+.post-tag-top-title {
+  line-height: 18px;
+  color: rgba(140, 140, 140, 1);
+}
+.post-tag-top-detail > span {
+  font-family: FetteMittelschrift;
+  background: rgba(247, 247, 247, 1);
+  color: rgba(38, 38, 38, 1);
+  border-radius: 3px;
+  padding: 0px 8px;
+  line-height: 22px;
+}
+.relative-tag {
+  line-height: 18px;
+  color: rgba(140, 140, 140, 1);
+}
+.post-tag-detail {
+  margin-top: 10px
 }
 </style>

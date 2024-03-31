@@ -220,7 +220,11 @@ const handleSubmit = async () => {
       </a-upload>
     </div>
     <div class="content">
-      <md-editor :value="mdValue" :handleChange="handleOnChange"></md-editor>
+      <ai-editor
+        :value="mdValue"
+        :handleChange="handleOnChange"
+        style="max-height: 600px"
+      ></ai-editor>
     </div>
   </div>
 </template>

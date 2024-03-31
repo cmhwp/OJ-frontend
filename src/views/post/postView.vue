@@ -71,10 +71,7 @@
                   border-radius: 10px;
                 "
               >
-                <a-list-item
-                  class="list-demo-item"
-                  action-layout="vertical"
-                >
+                <a-list-item class="list-demo-item" action-layout="vertical">
                   <template #actions>
                     <span
                       class="action"
@@ -138,7 +135,9 @@
                           {{ tag }}
                         </a-tag>
                       </a-space>
-                      <p class="item-description"  @click="handleItemClick(item.id)">{{ item.summary }}</p>
+                      <p class="item-description" @click="handleItemClick(item.id)">
+                        {{ item.summary }}
+                      </p>
                     </template>
                     <template #avatar>
                       <a-avatar
@@ -366,6 +365,8 @@ const current = ref<number>(parseInt(route.query.current as string) || 1)
 const pageSize = ref<number>(parseInt(route.query.pageSize as string) || 15)
 
 const searchParams = ref<PostQueryRequest>({
+  sortOrder: 'descend',
+  sortField: 'createTime',
   searchText: '',
   pageSize: pageSize.value,
   current: current.value
@@ -403,6 +404,7 @@ const list = ref([])
 
 const listParams = ref<PostQueryRequest>({
   sortOrder: 'descend',
+  sortField: 'createTime',
   pageSize: 10,
   current: 1
 })
