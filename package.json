@@ -11,7 +11,8 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
     "prepare": "husky install",
-    "test": "echo \"No test specified\" && exit 0"
+    "test": "echo \"No test specified\" && exit 0",
+    "fix-memory-limit": "cross-env LIMIT=4096 increase-memory-limit"
   },
   "dependencies": {
     "@bytemd/plugin-gfm": "^1.21.0",

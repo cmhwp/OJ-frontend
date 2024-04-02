@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import image from '@/assets/image/我家哥哥的蛋.png'
+import image from '@/assets/logo.svg'
 import { reactive, ref } from 'vue'
 import SlideCode from '@/components/slideCode.vue'
 import useUserStore from '@/stores/user/user'
@@ -157,9 +157,10 @@ const handleRegisterClick = () => {
 #user-login .logo {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
+  margin-left: 35%;
   margin-bottom: 24px;
-  max-width: 55%; /* 图片的最大宽度为父元素的100%，这样可以实现等比缩放 */
+  max-width: 35%; /* 图片的最大宽度为父元素的100%，这样可以实现等比缩放 */
   height: auto;
 }
 #user-login .login-input {

@@ -2,12 +2,11 @@
 import { computed, ref, watch } from 'vue'
 import { routes } from '@/router/routes'
 import { type RouteRecordRaw, useRouter } from 'vue-router'
-import image from '@/assets/image/我家哥哥的蛋.png'
+import image from '@/assets/logo.svg'
 import useUserStore from '@/stores/user/user'
 import { storeToRefs } from 'pinia'
 import checkAccess from '@/utils/access/checkAccess'
 import accessEnum from '@/utils/access/accessEnum'
-import user from "@/stores/user/user";
 
 const selectedKeys = ref<string[]>(['/'])
 const router = useRouter()
@@ -158,8 +157,9 @@ const handleSwitchClick = (index: number) => {
   align-items: center;
 }
 .logo {
-  height: 36px;
+  height: 50px;
   cursor: pointer;
+  width: 50px;
 }
 .registration-text {
   color: #0000008c;

@@ -115,12 +115,30 @@ export const routes: Array<RouteRecordRaw> = [
     }
   },
   {
+    path: '/manage/submit_question',
+    name: '提交管理',
+    component: () => import('../views/question/questionSubmitView.vue'),
+    meta: {
+      Auth: AccessEnum.ADMIN,
+      show: true
+    }
+  },
+  {
     path: '/post/detail',
     name: '发帖详情',
     component: () => import('../views/post/postDetail.vue'),
     meta: {
       Auth: AccessEnum.USER,
       show: false
+    }
+  },
+  {
+    path: '/manage/user',
+    name: '用户管理',
+    component: () => import('../views/user/manageUserView.vue'),
+    meta: {
+      Auth: AccessEnum.ADMIN,
+      show: true
     }
   },
   {

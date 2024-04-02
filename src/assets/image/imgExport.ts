@@ -11,7 +11,7 @@ import Image10 from './积分.png'
 import Image11 from './笔记本.png'
 import Image12 from './进度管理.png'
 import Image13 from './做题分析.png'
-import Image14 from './我家哥哥的蛋.png'
+import Image14 from '../logo.svg'
 import Image15 from './未开会员.png'
 export {
   Image1,
