@@ -16,6 +16,7 @@ const handleOnChangeCode = (v: string) => {
   <div>
     <md-editor :value="mdValue" :handleChange="handleOnChange"></md-editor>
     <code-editor :value="codeValue" :handleChange="handleOnChangeCode"></code-editor>
+    <reply-editor-modal></reply-editor-modal>
   </div>
 </template>
 

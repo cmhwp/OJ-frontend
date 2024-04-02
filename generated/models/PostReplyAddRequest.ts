@@ -2,13 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type PostEditRequest = {
+export type PostReplyAddRequest = {
     content?: string;
-    cover?: string;
-    id?: number;
-    summary?: string;
-    tags?: Array<string>;
-    title?: string;
-    topic?: string;
+    parentReplyId?: number;
+    postId?: number;
 };
 

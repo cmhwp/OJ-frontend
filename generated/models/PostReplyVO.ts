@@ -2,22 +2,19 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type Post = {
+import type { UserVO } from './UserVO';
+export type PostReplyVO = {
     content?: string;
-    cover?: string;
     createTime?: string;
     favourNum?: number;
+    hasFavour?: boolean;
+    hasThumb?: boolean;
     id?: number;
-    isDelete?: number;
-    readNum?: number;
-    replyNum?: number;
-    status?: string;
-    summary?: string;
-    tags?: string;
+    parentReplyId?: number;
+    postId?: number;
     thumbNum?: number;
-    title?: string;
-    topic?: string;
     updateTime?: string;
     userId?: number;
+    userVO?: UserVO;
 };
 

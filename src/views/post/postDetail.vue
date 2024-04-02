@@ -1,8 +1,17 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
-import { PostControllerService } from '../../../generated'
+import {
+  PostControllerService,
+  PostFavourControllerService,
+  type PostReplyQueryRequest,
+  PostThumbControllerService,
+  ReplyFavourControllerService,
+  ReplyThumbControllerService
+} from '../../../generated'
 import { useRoute } from 'vue-router'
 import moment from 'moment/moment'
+import useReplyStore, { type IReply } from '@/stores/reply/reply'
+import message from '@arco-design/web-vue/es/message'
 const resData = ref()
 const route = useRoute()
 const dataList = async () => {
@@ -31,14 +40,143 @@ const getRandomColor = () => {
   const randomIndex = Math.floor(Math.random() * colors.length)
   return colors[randomIndex]
 }
+//组件显示隐藏
+const show = ref(false)
+const handleReplyClick = () => {
+  show.value = true
+  const marginBottomValue = show.value ? '50vh' : '0px'
+  const postDetailElement = document.getElementById('post-detail')
+  if (postDetailElement != null) {
+    postDetailElement.style.marginBottom = marginBottomValue
+  }
+}
+//回复状态
+const replyList = ref<IReply[]>([])
+const replyState = useReplyStore()
+const current = ref<number>(parseInt(route.query.current as string) || 1)
+const pageSize = ref<number>(parseInt(route.query.pageSize as string) || 10)
+const searchParams = ref<PostReplyQueryRequest>({
+  postId: route.query.id as unknown as number,
+  pageSize: pageSize.value,
+  current: current.value
+})
+const loadReplyData = async () => {
+  await replyState.loadReplyData(searchParams.value)
 
+  if (replyState.replies && replyState.replies.length > 0) {
+    // 确保每个回复都有完整的 userVO 对象 报错复现下
+    replyList.value = replyState.replies.filter((reply) => reply.userVO)
+  }
+  console.log('replyList', replyList.value)
+}
+//处理帖子点赞
+const handlePostLikeChange = async (postId: number) => {
+  console.log(postId)
+  const res = await PostThumbControllerService.doThumbUsingPost({
+    postId: postId
+  })
+  if (res.code === 0) {
+    console.log(res)
+    const post = resData.value
+    if (post.id === postId) {
+      post.thumbNum += res.data === 1 ? 1 : -1
+      post.hasThumb = res.data !== -1
+    }
+    if (res.data === 1) {
+      message.success('点赞成功')
+    } else message.success('取消点赞')
+  } else {
+    message.error('点赞失败：' + res.message)
+  }
+}
+
+//处理帖子收藏
+const handlePostFavorChange = async (postId: number) => {
+  console.log(postId)
+  const res = await PostFavourControllerService.doPostFavourUsingPost({
+    postId: postId
+  })
+  if (res.code === 0) {
+    console.log(res)
+    const post = resData.value
+    if (post.id === postId) {
+      post.favourNum += res.data === 1 ? 1 : -1
+      post.hasFavour = res.data !== -1
+    }
+    if (res.data === 1) {
+      message.success('收藏成功')
+    } else message.success('取消收藏')
+  } else {
+    message.error('收藏失败：' + res.message)
+  }
+}
+
+//处理收藏
+const onLikeReplyChange = async (replyId: number) => {
+  const res = await ReplyThumbControllerService.doReplyThumbUsingPost({
+    replyId: replyId
+  })
+  if (res.code === 0) {
+    console.log(res)
+    const index = replyList.value.findIndex((item) => item.id === replyId)
+    console.log(index)
+    if (index !== -1) {
+      const reply = replyList.value[index]
+      reply.thumbNum += res.data === 1 ? 1 : -1
+      reply.hasThumb = res.data !== -1
+    }
+    if (res.data === 1) {
+      message.success('点赞成功')
+    } else message.success('取消点赞')
+  } else {
+    message.error('点赞失败：' + res.message)
+  }
+}
+const onFavourChange = async (replyId: number) => {
+  const res = await ReplyFavourControllerService.doReplyFavourUsingPost({
+    replyId: replyId
+  })
+  if (res.code === 0) {
+    console.log(res)
+    const index = replyList.value.findIndex((item) => item.id === replyId)
+    console.log(index)
+    if (index !== -1) {
+      const reply = replyList.value[index]
+      reply.favourNum += res.data === 1 ? 1 : -1
+      reply.hasFavour = res.data !== -1
+    }
+    if (res.data === 1) {
+      message.success('收藏成功')
+    } else message.success('取消收藏')
+  } else {
+    message.error('收藏失败：' + res.message)
+  }
+}
+//切换最新回复
+const handleNewClick = async () => {
+  searchParams.value = {
+    ...searchParams.value,
+    sortOrder: 'descend',
+    sortField: 'createTime'
+  }
+  await replyState.loadReplyData(searchParams.value)
+  replyList.value = replyState.replies
+}
+
+const handleShow = (value: boolean) => {
+  loadReplyData()
+  console.log(value)
+  show.value = value
+}
 watch(
   () => route.query.id,
   () => {
     dataList()
   }
 )
+
 onMounted(() => {
+  loadReplyData()
   dataList()
 })
 </script>
@@ -57,16 +195,14 @@ onMounted(() => {
                 <span class="ant-breadcrumb-separator">/</span>
               </span>
               <span>
-                <span class="post-header-item" v-if="resData && resData.title">
-                  <a>{{ resData.title }}</a>
-                </span>
-                <span class="ant-breadcrumb-separator" v-if="resData && resData.summary !== null"
-                  >/</span
-                >
-              </span>
-              <span v-if="resData && resData.summary !== null">
                 <span class="post-header-item">
-                  <a>{{ resData.summary }}</a>
+                  <a>{{ resData?.topic }}</a>
+                </span>
+                <span class="ant-breadcrumb-separator">/</span>
+              </span>
+              <span>
+                <span class="post-header-item">
+                  <a>{{ resData?.title }}</a>
                 </span>
               </span>
             </div>
@@ -88,9 +224,19 @@ onMounted(() => {
               <div class="css-xwj2ip-UsernameContainer">
                 <span class="css-17369th-NameWrap">{{ resData?.user?.userName }}</span>
               </div>
-              <span style="color: rgba(191, 191, 191, 1); margin-left: 10px; white-space: nowrap"
+              <span style="color: rgba(191, 191, 191, 1); margin-right: 10px; white-space: nowrap"
                 >发起于 {{ moment(resData?.createTime).format('YYYY年MM月DD日') }}</span
               >
+              <div
+                style="
+                  margin-right: 10px;
+                  width: 4px;
+                  height: 4px;
+                  border-radius: 100%;
+                  background: rgba(229, 229, 229, 1);
+                "
+              ></div>
+              <span style="color: rgba(191, 191, 191, 1)">来自{{resData?.user?.address}}</span>
             </div>
           </div>
           <div style="position: relative">
@@ -102,8 +248,12 @@ onMounted(() => {
           <div class="css-jgmohy-QuestionActionsContainer">
             <div class="css-1ukmnx3-ReactionWraper">
               <div style="display: flex">
-                <div class="css-4t1g65-ReactionUpvoteBtnWrapper">
+                <div
+                  class="css-4t1g65-ReactionUpvoteBtnWrapper"
+                  @click="handlePostLikeChange(resData.id)"
+                >
                   <icon-thumb-up
+                    v-if="!resData?.hasThumb"
                     style="
                       padding: 2px;
                       height: 24px;
@@ -111,6 +261,16 @@ onMounted(() => {
                       border-radius: 100%;
                       color: rgba(60, 60, 67, 0.6);
                     "
+                  />
+                  <icon-thumb-up-fill
+                    style="
+                      padding: 2px;
+                      height: 24px;
+                      width: 24px;
+                      border-radius: 100%;
+                      color: rgba(45, 181, 93, 1);
+                    "
+                    v-else
                   />
                   <span class="thumbNum-text">{{ resData?.thumbNum }}</span>
                 </div>
@@ -127,16 +287,23 @@ onMounted(() => {
             ></div>
             <button
               class="css-1c66zjl-BaseButtonComponent-OperationButton-CompactOperationButton-CompactOperationOrangeButton"
+              @click="handlePostFavorChange(resData.id)"
             >
-              <icon-star style="width: 20px; height: 20px" />
-              <span>收藏</span>
+              <div v-if="!resData?.hasFavour" style="display: flex; align-items: center">
+                <icon-star style="width: 20px; height: 20px" />
+                <span>收藏</span>
+              </div>
+              <div v-else style="color: rgba(255, 161, 22, 1); display: flex; align-items: center">
+                <icon-star-fill style="width: 20px; height: 20px" />
+                <span>已收藏</span>
+              </div>
             </button>
             <button class="css-1kpbure-BaseButtonComponent-OperationButton">
               <icon-launch style="width: 20px; height: 20px" />
               <span>分享</span>
             </button>
             <div style="margin-left: auto">
-              <button class="reply-btn">
+              <button class="reply-btn" @click="handleReplyClick">
                 <icon-edit style="height: 16px; width: 16px" />
                 <span style="margin-left: 4px">回复讨论</span>
               </button>
@@ -145,43 +312,69 @@ onMounted(() => {
         </div>
         <div class="reply-total">
           <!--TODO-->
-          <div class="total-text">共 24 个回复</div>
-          <button class="sort-btn">
+          <div class="total-text">共 {{ replyState.total }} 个回复</div>
+          <button class="sort-btn" @click="handleNewClick">
             <span>最新</span>
             <icon-sort style="height: 16px; width: 16px; margin-left: 2px" />
           </button>
         </div>
         <div class="reply-detail-total">
           <!--TODO-->
-          <div class="reply-detail">
+          <div
+            class="reply-detail"
+            v-for="(item, index) in replyList"
+            :key="index"
+            style="margin-top: 20px"
+          >
             <div class="reply-detail-top">
               <div class="reply-detail-top-left">
                 <a-avatar
                   class="reply-detail-avatar"
-                  :image-url="`https://assets.leetcode.cn/aliyun-lc-upload/users/tian-se-zheng-hao/avatar_1629539440.png?x-oss-process=image%2Fresize%2Ch_44%2Cw_44%2Fformat%2Cwebp`"
+                  :image-url="item?.userVO?.userAvatar"
                 ></a-avatar>
                 <div class="reply-detail-nick">
-                  <span>小寒</span>
+                  <span>{{ item?.userVO?.userName }}</span>
                 </div>
               </div>
               <div class="reply-detail-top-right">
                 <div class="reply-detail-time">
+                  <span style="margin: 0px 8px">来自{{ item.userVO.address }}</span>
+                  <div
+                    style="
+                      width: 4px;
+                      height: 4px;
+                      border-radius: 100%;
+                      background: rgba(229, 229, 229, 1);
+                    "
+                  ></div>
                   <span style="margin: 0px 8px">{{
-                    moment(resData?.createTime).format('YYYY-MM-DD')
+                    moment(item.createTime).format('YYYY-MM-DD')
                   }}</span>
                 </div>
               </div>
             </div>
             <div class="reply-detail-middle">
-              <md-view style="min-height: 50px; margin-bottom: 10px"></md-view>
+              <md-view
+                style="
+                  min-height: 50px;
+                  margin-bottom: 10px;
+                  line-height: 50px;
+                  align-items: center;
+                "
+                :value="item.content"
+              ></md-view>
             </div>
             <div class="reply-detail-bottom">
               <div class="reply-detail-bottom-left">
                 <div style="margin-left: 10px">
                   <div class="css-1ukmnx3-ReactionWraper">
                     <div style="display: flex">
-                      <div class="css-4t1g65-ReactionUpvoteBtnWrapper">
+                      <div
+                        class="css-4t1g65-ReactionUpvoteBtnWrapper"
+                        @click="onLikeReplyChange(item.id)"
+                      >
                         <icon-thumb-up
+                          v-if="!item.hasThumb"
                           style="
                             padding: 2px;
                             height: 24px;
@@ -190,7 +383,17 @@ onMounted(() => {
                             color: rgba(60, 60, 67, 0.6);
                           "
                         />
-                        <span class="thumbNum-text">{{ resData?.thumbNum }}</span>
+                        <icon-thumb-up-fill
+                          style="
+                            padding: 2px;
+                            height: 24px;
+                            width: 24px;
+                            border-radius: 100%;
+                            color: rgba(45, 181, 93, 1);
+                          "
+                          v-else
+                        />
+                        <span class="thumbNum-text">{{ item.thumbNum }}</span>
                       </div>
                     </div>
                   </div>
@@ -210,9 +413,19 @@ onMounted(() => {
                 </button>
                 <button
                   class="css-1c66zjl-BaseButtonComponent-OperationButton-CompactOperationButton-CompactOperationOrangeButton"
+                  @click="onFavourChange(item.id)"
                 >
-                  <icon-star style="width: 20px; height: 20px" />
-                  <span>收藏</span>
+                  <div v-if="!item.hasFavour" style="display: flex; align-items: center">
+                    <icon-star style="width: 20px; height: 20px" />
+                    <span>收藏</span>
+                  </div>
+                  <div
+                    v-else
+                    style="color: rgba(255, 161, 22, 1); display: flex; align-items: center"
+                  >
+                    <icon-star-fill style="width: 20px; height: 20px" />
+                    <span>已收藏</span>
+                  </div>
                 </button>
                 <button class="css-1kpbure-BaseButtonComponent-OperationButton">
                   <icon-launch style="width: 20px; height: 20px" />
@@ -221,6 +434,13 @@ onMounted(() => {
               </div>
             </div>
           </div>
+          <reply-editor-modal
+            style="position: fixed; bottom: 0; width: 100%"
+            v-show="show"
+            :show="show"
+            :postId="route.query.id as unknown as number"
+            @update-show="handleShow"
+          ></reply-editor-modal>
         </div>
       </a-col>
       <a-col :span="4">
@@ -233,6 +453,10 @@ onMounted(() => {
             <div class="post-tag-top-detail">
               <div class="post-tag-top-title">点赞次数</div>
               <span>{{ resData?.thumbNum }}</span>
+            </div>
+            <div class="post-tag-top-detail">
+              <div class="post-tag-top-title">浏览次数</div>
+              <span>{{ resData?.readNum }}</span>
             </div>
           </div>
           <div
@@ -375,6 +599,7 @@ onMounted(() => {
 .css-17369th-NameWrap {
   color: rgba(191, 191, 191, 1);
   font-size: 12px;
+  margin-right: 10px;
 }
 .css-1j8tn6 {
   position: relative;
@@ -702,6 +927,6 @@ onMounted(() => {
   color: rgba(140, 140, 140, 1);
 }
 .post-tag-detail {
-  margin-top: 10px
+  margin-top: 10px;
 }
 </style>

@@ -9,12 +9,17 @@ export type PostVO = {
     createTime?: string;
     favourNum?: number;
     hasFavour?: boolean;
+    hasRead?: boolean;
     hasThumb?: boolean;
     id?: number;
+    readNum?: number;
+    replyNum?: number;
+    status?: string;
     summary?: string;
     tagList?: Array<string>;
     thumbNum?: number;
     title?: string;
+    topic?: string;
     updateTime?: string;
     user?: UserVO;
     userId?: number;

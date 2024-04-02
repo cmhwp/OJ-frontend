@@ -9,6 +9,8 @@ declare module 'vue' {
   export interface GlobalComponents {
     AiEditor: typeof import('./src/components/aiEditor.vue')['default']
     AiEditorView: typeof import('./src/components/aiEditorView.vue')['default']
+    AiPostEditor: typeof import('./src/components/reply/aiPostEditor.vue')['default']
+    AiPostEditorView: typeof import('./src/components/reply/aiPostEditorView.vue')['default']
     ALayout: typeof import('@arco-design/web-vue')['Layout']
     ALayoutContent: typeof import('@arco-design/web-vue')['LayoutContent']
     ALayoutFooter: typeof import('@arco-design/web-vue')['LayoutFooter']
@@ -64,6 +66,7 @@ declare module 'vue' {
     QuestionFilter: typeof import('./src/components/question/QuestionFilter.vue')['default']
     QuestionNote: typeof import('./src/components/question/questionNote.vue')['default']
     QuestionTable: typeof import('./src/components/question/QuestionTable.vue')['default']
+    ReplyEditorModal: typeof import('./src/components/reply/replyEditorModal.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SearchInput: typeof import('./src/components/question/SearchInput.vue')['default']

@@ -3,29 +3,28 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { BaseResponse_int_ } from '../models/BaseResponse_int_';
-import type { BaseResponse_long_ } from '../models/BaseResponse_long_';
 import type { BaseResponse_Page_PostVO_ } from '../models/BaseResponse_Page_PostVO_';
-import type { PostFavourAddRequest } from '../models/PostFavourAddRequest';
-import type { PostFavourQueryRequest } from '../models/PostFavourQueryRequest';
 import type { PostQueryRequest } from '../models/PostQueryRequest';
+import type { PostReadAddRequest } from '../models/PostReadAddRequest';
+import type { PostReadQueryRequest } from '../models/PostReadQueryRequest';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-export class PostFavourControllerService {
+export class PostReadControllerService {
     /**
-     * doPostFavour
-     * @param postFavourAddRequest postFavourAddRequest
+     * doPostRead
+     * @param postReadAddRequest postReadAddRequest
      * @returns BaseResponse_int_ OK
      * @returns any Created
      * @throws ApiError
      */
-    public static doPostFavourUsingPost(
-        postFavourAddRequest: PostFavourAddRequest,
+    public static doPostReadUsingPost(
+        postReadAddRequest: PostReadAddRequest,
     ): CancelablePromise<BaseResponse_int_ | any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/post_favour/',
-            body: postFavourAddRequest,
+            url: '/api/post_read/',
+            body: postReadAddRequest,
             errors: {
                 401: `Unauthorized`,
                 403: `Forbidden`,
@@ -34,41 +33,19 @@ export class PostFavourControllerService {
         });
     }
     /**
-     * getPost_favourStatus
-     * @param postId postId
-     * @returns BaseResponse_long_ OK
-     * @throws ApiError
-     */
-    public static getPostFavourStatusUsingGet(
-        postId?: number,
-    ): CancelablePromise<BaseResponse_long_> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/post_favour/get/post_favour/status',
-            query: {
-                'postId': postId,
-            },
-            errors: {
-                401: `Unauthorized`,
-                403: `Forbidden`,
-                404: `Not Found`,
-            },
-        });
-    }
-    /**
-     * listFavourPostByPage
-     * @param postFavourQueryRequest postFavourQueryRequest
+     * listReadPostByPage
+     * @param postReadQueryRequest postReadQueryRequest
      * @returns BaseResponse_Page_PostVO_ OK
      * @returns any Created
      * @throws ApiError
      */
-    public static listFavourPostByPageUsingPost(
-        postFavourQueryRequest: PostFavourQueryRequest,
+    public static listReadPostByPageUsingPost(
+        postReadQueryRequest: PostReadQueryRequest,
     ): CancelablePromise<BaseResponse_Page_PostVO_ | any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/post_favour/list/page',
-            body: postFavourQueryRequest,
+            url: '/api/post_read/list/page',
+            body: postReadQueryRequest,
             errors: {
                 401: `Unauthorized`,
                 403: `Forbidden`,
@@ -77,18 +54,18 @@ export class PostFavourControllerService {
         });
     }
     /**
-     * listMyFavourPostByPage
+     * listMyReadPostByPage
      * @param postQueryRequest postQueryRequest
      * @returns BaseResponse_Page_PostVO_ OK
      * @returns any Created
      * @throws ApiError
      */
-    public static listMyFavourPostByPageUsingPost(
+    public static listMyReadPostByPageUsingPost(
         postQueryRequest: PostQueryRequest,
     ): CancelablePromise<BaseResponse_Page_PostVO_ | any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/post_favour/my/list/page',
+            url: '/api/post_read/my/list/page',
             body: postQueryRequest,
             errors: {
                 401: `Unauthorized`,

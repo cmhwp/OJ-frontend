@@ -8,5 +8,6 @@ export type PostAddRequest = {
     summary?: string;
     tags?: Array<string>;
     title?: string;
+    topic?: string;
 };
 

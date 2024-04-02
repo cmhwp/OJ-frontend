@@ -2,22 +2,17 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type PostQueryRequest = {
+export type PostReplyQueryRequest = {
     content?: string;
     current?: number;
     favourUserId?: number;
     id?: number;
     notId?: number;
-    orTags?: Array<string>;
     pageSize?: number;
+    postId?: number;
     searchText?: string;
     sortField?: string;
     sortOrder?: string;
-    status?: string;
-    summary?: string;
-    tags?: Array<string>;
-    title?: string;
-    topic?: string;
     userId?: number;
 };
 

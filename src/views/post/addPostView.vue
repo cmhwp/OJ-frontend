@@ -82,7 +82,8 @@ const formRef = ref({
   tags: [] as string[],
   content: '',
   cover: '',
-  summary: ''
+  summary: '',
+  topic: '求职面试'
 })
 //帖子图片
 const file = ref()
@@ -100,7 +101,7 @@ const onProgress = (currentFile: FileItem) => {
 const handleSubmit = async () => {
   formRef.value.tags = tags.value.map((tag) => tag.text)
   formRef.value.content = mdValue.value
-  if (file.value && file.value.file) {
+  if (file.value && file.value.file && formRef.value.cover === '') {
     await FileControllerService.uploadFileUsingPost(file.value.file, 'user_avatar').then((res) => {
       if (res.code === 0) {
         formRef.value.cover = res.data
@@ -110,6 +111,7 @@ const handleSubmit = async () => {
       }
     })
   }
+  console.log(formRef.value)
   await PostControllerService.addPostUsingPost(formRef.value).then(async (res) => {
     if (res.code === 0) {
       message.success('发布成功')
@@ -134,6 +136,26 @@ const handleSubmit = async () => {
         <button class="submit-btn" @click="handleSubmit"><span>发起讨论</span></button>
       </div>
       <div class="tag">
+        <div class="topic-total">
+          <div class="topic-total-left">#</div>
+          <span style="color: #262626bf">所属话题：</span>
+          <a-select
+            v-model="formRef.topic"
+            :style="{
+              width: '120px',
+              borderRadius: '8px',
+              color: '#262626bf',
+              backgroundColor: 'transparent'
+            }"
+            placeholder="Please select ..."
+          >
+            <a-option>求职面试</a-option>
+            <a-option>职场与内推</a-option>
+            <a-option>技术交流</a-option>
+            <a-option>学习分享</a-option>
+            <a-option>意见反馈</a-option>
+          </a-select>
+        </div>
         <div style="with: 1px; margin-right: 10px"></div>
         <div class="tag-div" v-for="tag of tags" :key="tag.text" style="padding: 0 10px">
           <a-tag @close="handleRemove(tag)" closable :color="tag.color">
@@ -164,7 +186,7 @@ const handleSubmit = async () => {
               style="background-color: rgba(0, 122, 255, 1); color: #ffffff; border-radius: 50%"
             />
           </template>
-          Add Tag
+          新增标签
         </a-tag>
       </div>
     </div>
@@ -176,7 +198,12 @@ const handleSubmit = async () => {
       ></a-input>
     </div>
     <div class="cover">
-      <span class="cover-span">点击上传文章封面</span>
+      <span class="cover-span">点击上传文章封面 / 输入封面链接</span>
+      <a-input
+        class="cover-input"
+        placeholder="请输入封面链接···"
+        v-model="formRef.cover"
+      ></a-input>
       <a-upload
         class="cover-upload"
         action="/"
@@ -332,6 +359,32 @@ const handleSubmit = async () => {
   white-space: nowrap;
   flex-wrap: wrap;
 }
+.tag .topic-total {
+  margin-right: 10px;
+  height: 32px;
+  border-radius: 16px;
+  background-color: rgba(0, 10, 32, 0.05);
+  display: flex;
+  padding: 0px 10px;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  color: rgba(38, 38, 38, 0.75);
+}
+.topic-total .topic-total-left {
+  width: 14px;
+  height: 14px;
+  border-radius: 7px;
+  margin-right: 8px;
+  font-size: 12px;
+  line-height: 14px;
+  text-align: center;
+  color: rgba(255, 255, 255, 1);
+  background-color: rgba(0, 122, 255, 1);
+}
 .cover {
   display: flex;
   -webkit-box-align: center;
@@ -340,6 +393,20 @@ const handleSubmit = async () => {
   padding: 0px 15px;
   border-bottom: 1px solid rgba(240, 240, 240, 1);
   height: 100px;
+}
+.cover .cover-input {
+  border-radius: 0.375rem;
+  position: relative;
+  touch-action: manipulation;
+  outline: 2px solid #0000;
+  outline-offset: 2px;
+  color: #262626bf;
+  line-height: 1.25rem;
+  padding: 0.375rem 0.75rem 0.375rem 0.75rem;
+  background-color: #00000008;
+  width: 40%;
+  height: 2.5rem;
+  overflow: visible;
 }
 .cover .cover-span {
   color: rgba(63, 60, 60, 0.73);

@@ -79,7 +79,7 @@
                       @click="onLikeChange(item.id)"
                       style="margin-left: 10px"
                     >
-                      <span v-if="item.hasThumb == 1">
+                      <span v-if="item.hasThumb === 1 || item.hasThumb === true">
                         <IconHeartFill :style="{ color: '#f53f3f' }" size="15" />
                       </span>
                       <span v-else>
@@ -87,14 +87,14 @@
                       </span>
                       {{ item.thumbNum }}
                     </span>
-                    <span class="action">
+                    <span>
                       <span>
                         <icon-eye size="15" />
                       </span>
                       {{ item.readNum }}
                     </span>
                     <span class="action" key="star" @click="onStarChange(item.id)">
-                      <span v-if="item.hasFavour == 1">
+                      <span v-if="item.hasFavour === 1 || item.hasFavour === true">
                         <IconStarFill
                           :style="{
                             color: '#ffb400'
@@ -141,7 +141,7 @@
                     </template>
                     <template #avatar>
                       <a-avatar
-                        shape="square"
+                        shape="circle"
                         style="margin-left: 15px; margin-top: -60px"
                         :image-url="item.user?.userAvatar"
                       >
@@ -331,6 +331,7 @@ import {
   PostControllerService,
   PostFavourControllerService,
   type PostQueryRequest,
+  PostReadControllerService,
   PostThumbControllerService
 } from '../../../generated'
 
@@ -359,6 +360,7 @@ interface PostItem {
   favourNum: number
   hasFavour: boolean
   thumbNum: number
+  readNum: number
 }
 
 const current = ref<number>(parseInt(route.query.current as string) || 1)
@@ -497,7 +499,24 @@ const onStarChange = async (postId: number) => {
     message.error('收藏失败：' + res.message)
   }
 }
-
+/**
+ * 浏览
+ * @param postId
+ */
+const onEyeChange = async (postId: number) => {
+  const res = await PostReadControllerService.doPostReadUsingPost({
+    postId: postId
+  })
+  if (res.code === 0) {
+    const index = dataList.value.findIndex((item) => item.id === postId)
+    if (index !== -1) {
+      const post = dataList.value[index]
+      post.readNum += 1
+    }
+  } else {
+    message.error('浏览失败：' + res.message)
+  }
+}
 // 切换当前页码
 const onPageChange = (page: number) => {
   searchParams.value = {
@@ -525,13 +544,14 @@ const onPageSizeChange = (Size: number) => {
   })
 }
 //跳转到帖子详情页面
-const handleItemClick = (id: number) => {
-  router.push({
+const handleItemClick = async (id: number) => {
+  await router.push({
     path: '/post/detail',
     query: {
       id: id
     }
   })
+  await onEyeChange(id)
 }
 </script>
 
@@ -576,6 +596,7 @@ const handleItemClick = (id: number) => {
   -webkit-line-clamp: 2; /* 最大显示行数 */
   line-clamp: 2; /* 最大显示行数 */
   color: #3c3c4399;
+  cursor: pointer;
 }
 
 .item-tags {
