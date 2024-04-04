@@ -15,6 +15,9 @@ interface IReply {
   favourNum: number
   hasFavour: boolean
   thumbNum: number
+  replyNum: number
+  parentReplyId: number
+  showReplies: boolean
   createTime: Date
   userVO: IUserVO
 }

@@ -107,7 +107,7 @@
                       </span>
                       {{ item.favourNum }}
                     </span>
-                    <span class="action" key="reply"> <IconMessage /> 评论 </span>
+                    <span class="action" key="reply"> <IconMessage /> {{ item.replyNum }} </span>
                   </template>
                   <template #extra>
                     <div class="image-area" v-if="item.cover">

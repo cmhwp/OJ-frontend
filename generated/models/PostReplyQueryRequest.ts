@@ -9,6 +9,7 @@ export type PostReplyQueryRequest = {
     id?: number;
     notId?: number;
     pageSize?: number;
+    parentReplyId?: number;
     postId?: number;
     searchText?: string;
     sortField?: string;

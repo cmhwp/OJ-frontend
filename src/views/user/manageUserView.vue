@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { User, UserControllerService } from '../../../generated'
+import { type User, UserControllerService } from '../../../generated'
 import message from '@arco-design/web-vue/es/message'
 import { useRoute, useRouter } from 'vue-router'
 import { reactive, ref, watchEffect } from 'vue'
@@ -282,13 +282,8 @@ const onClear = () => {
             <template #content>
               <div class="content-basic">
                 <a-space direction="vertical">
-                  <a
-                    v-for="(website, index) of record.websites ? JSON.parse(record.websites) : []"
-                    :key="index"
-                    :href="website.value"
-                    target="_blank"
-                  >
-                    {{ website.value }}
+                  <a :href="record.websites" target="_blank">
+                    {{ record.websites }}
                   </a>
                 </a-space>
               </div>

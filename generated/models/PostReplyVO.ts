@@ -12,6 +12,7 @@ export type PostReplyVO = {
     id?: number;
     parentReplyId?: number;
     postId?: number;
+    replyNum?: number;
     thumbNum?: number;
     updateTime?: string;
     userId?: number;

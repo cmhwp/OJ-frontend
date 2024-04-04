@@ -3,6 +3,7 @@ import { onMounted, ref, watch } from 'vue'
 import {
   PostControllerService,
   PostFavourControllerService,
+  PostReplyControllerService,
   type PostReplyQueryRequest,
   PostThumbControllerService,
   ReplyFavourControllerService,
@@ -12,6 +13,7 @@ import { useRoute } from 'vue-router'
 import moment from 'moment/moment'
 import useReplyStore, { type IReply } from '@/stores/reply/reply'
 import message from '@arco-design/web-vue/es/message'
+import reply from '@/stores/reply/reply'
 const resData = ref()
 const route = useRoute()
 const dataList = async () => {
@@ -42,6 +44,7 @@ const getRandomColor = () => {
 }
 //组件显示隐藏
 const show = ref(false)
+//回复Btn显示隐藏
 const handleReplyClick = () => {
   show.value = true
   const marginBottomValue = show.value ? '50vh' : '0px'
@@ -52,23 +55,31 @@ const handleReplyClick = () => {
 }
 //回复状态
 const replyList = ref<IReply[]>([])
+
 const replyState = useReplyStore()
 const current = ref<number>(parseInt(route.query.current as string) || 1)
 const pageSize = ref<number>(parseInt(route.query.pageSize as string) || 10)
 const searchParams = ref<PostReplyQueryRequest>({
   postId: route.query.id as unknown as number,
   pageSize: pageSize.value,
-  current: current.value
+  current: current.value,
+  sortOrder: 'descend',
+  sortField: 'createTime'
 })
 const loadReplyData = async () => {
   await replyState.loadReplyData(searchParams.value)
+  replyList.value = replyState.replies.filter(
+    (reply) => reply.parentReplyId === null || reply.parentReplyId === 0
+  )
 
-  if (replyState.replies && replyState.replies.length > 0) {
-    // 确保每个回复都有完整的 userVO 对象 报错复现下
-    replyList.value = replyState.replies.filter((reply) => reply.userVO)
-  }
+  // 在加载回复数据的方法中添加
+  replyList.value.forEach((reply) => {
+    reply.showReplies = false // 默认不显示子回复
+  })
+
   console.log('replyList', replyList.value)
 }
+
 //处理帖子点赞
 const handlePostLikeChange = async (postId: number) => {
   console.log(postId)
@@ -152,16 +163,40 @@ const onFavourChange = async (replyId: number) => {
     message.error('收藏失败：' + res.message)
   }
 }
+const replyId = ref(0)
+const replyToReply = ref<IReply[]>([])
+const toggleReplies = async (item: IReply) => {
+  // 如果当前没有子回复，则此操作不会改变任何东西
+  if (item.replyNum > 0) {
+    item.showReplies = !item.showReplies
+    const newSearchParams = {
+      ...searchParams.value,
+      parentReplyId: item.id
+    }
+    await PostReplyControllerService.listPostReplyVoByPageUsingPost(newSearchParams).then((res) => {
+      if (res.code === 0) {
+        replyToReply.value = res.data.records
+        console.log(replyToReply.value)
+      }
+    })
+  }
+  if (item.replyNum === 0) {
+    replyId.value = item.id
+    handleReplyClick()
+  }
+}
+
+const handleReplyToReply = (item: IReply) => {
+  replyId.value = item.id
+  handleReplyClick()
+  console.log(replyId.value)
+}
 //切换最新回复
 const handleNewClick = async () => {
-  searchParams.value = {
-    ...searchParams.value,
-    sortOrder: 'descend',
-    sortField: 'createTime'
-  }
   await replyState.loadReplyData(searchParams.value)
   replyList.value = replyState.replies
 }
+//处理回复的回复
 
 const handleShow = (value: boolean) => {
   loadReplyData()
@@ -174,6 +209,12 @@ watch(
     dataList()
   }
 )
+import { watchEffect } from 'vue'
+
+// 使用 watchEffect 监听 loadReplyData 函数的变化
+watchEffect(() => {
+  loadReplyData()
+})
 
 onMounted(() => {
   loadReplyData()
@@ -236,7 +277,7 @@ onMounted(() => {
                   background: rgba(229, 229, 229, 1);
                 "
               ></div>
-              <span style="color: rgba(191, 191, 191, 1)">来自{{resData?.user?.address}}</span>
+              <span style="color: rgba(191, 191, 191, 1)">来自{{ resData?.user?.address }}</span>
             </div>
           </div>
           <div style="position: relative">
@@ -407,9 +448,15 @@ onMounted(() => {
                     border-color: rgba(0, 10, 32, 0.11);
                   "
                 ></div>
-                <button class="reply">
-                  <icon-message style="width: 20px; height: 20px" />
-                  <span style="margin-left: 4px">回复</span>
+                <button class="reply" @click="toggleReplies(item)">
+                  <div v-if="!item.showReplies" style="display: flex; align-items: center">
+                    <icon-message style="width: 20px; height: 20px" />
+                    <span style="margin-left: 4px">回复</span>
+                  </div>
+                  <div v-else style="display: flex; align-items: center">
+                    <icon-double-down style="width: 20px; height: 20px" />
+                    <span style="margin-left: 4px">共 {{ item.replyNum }} 条回复</span>
+                  </div>
                 </button>
                 <button
                   class="css-1c66zjl-BaseButtonComponent-OperationButton-CompactOperationButton-CompactOperationOrangeButton"
@@ -432,6 +479,140 @@ onMounted(() => {
                   <span>分享</span>
                 </button>
               </div>
+              <button class="reply-detail-bottom-right" @click="handleReplyToReply(item)">
+                <icon-edit style="height: 18px; width: 18px"></icon-edit>
+                <span style="margin-left: 4px">添加回复</span>
+              </button>
+            </div>
+            <div v-if="item.showReplies">
+              <div style="padding-bottom: 16px" v-for="(reply, index) in replyToReply" :key="index">
+                <div
+                  style="
+                    margin-bottom: 12px;
+                    padding: 8px 16px 0px;
+                    background: rgba(247, 247, 247, 1);
+                    border-radius: 7px;
+                  "
+                >
+                  <div class="reply-detail-top">
+                    <div class="reply-detail-top-left">
+                      <a-avatar
+                        class="reply-detail-avatar"
+                        :image-url="reply?.userVO?.userAvatar"
+                      ></a-avatar>
+                      <div class="reply-detail-nick">
+                        <span>{{ reply?.userVO?.userName }}</span>
+                      </div>
+                    </div>
+                    <div class="reply-detail-top-right">
+                      <div class="reply-detail-time">
+                        <span style="margin: 0px 8px">来自{{ reply.userVO.address }}</span>
+                        <div
+                          style="
+                            width: 4px;
+                            height: 4px;
+                            border-radius: 100%;
+                            background: rgba(229, 229, 229, 1);
+                          "
+                        ></div>
+                        <span style="margin: 0px 8px">{{
+                          moment(reply.createTime).format('YYYY-MM-DD')
+                        }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="reply-detail-middle">
+                    <md-view
+                      style="
+                        min-height: 50px;
+                        margin-bottom: 10px;
+                        line-height: 50px;
+                        align-items: center;
+                      "
+                      :value="reply.content"
+                    ></md-view>
+                  </div>
+                  <div class="reply-detail-bottom">
+                    <div class="reply-detail-bottom-left">
+                      <div style="margin-left: 10px">
+                        <div class="css-1ukmnx3-ReactionWraper">
+                          <div style="display: flex">
+                            <div
+                              class="css-4t1g65-ReactionUpvoteBtnWrapper"
+                              @click="onLikeReplyChange(reply.id)"
+                            >
+                              <icon-thumb-up
+                                v-if="!reply.hasThumb"
+                                style="
+                                  padding: 2px;
+                                  height: 24px;
+                                  width: 24px;
+                                  border-radius: 100%;
+                                  color: rgba(60, 60, 67, 0.6);
+                                "
+                              />
+                              <icon-thumb-up-fill
+                                style="
+                                  padding: 2px;
+                                  height: 24px;
+                                  width: 24px;
+                                  border-radius: 100%;
+                                  color: rgba(45, 181, 93, 1);
+                                "
+                                v-else
+                              />
+                              <span class="thumbNum-text">{{ reply.thumbNum }}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        style="
+                          margin-right: 8px;
+                          height: 12px;
+                          border-left-width: 1px;
+                          border-left-style: solid;
+                          border-color: rgba(0, 10, 32, 0.11);
+                        "
+                      ></div>
+                      <button class="reply" @click="toggleReplies(reply)">
+                        <div v-if="!reply.showReplies" style="display: flex; align-items: center">
+                          <icon-message style="width: 20px; height: 20px" />
+                          <span style="margin-left: 4px">回复</span>
+                        </div>
+                        <div v-else style="display: flex; align-items: center">
+                          <icon-double-down style="width: 20px; height: 20px" />
+                          <span style="margin-left: 4px">共 {{ reply.replyNum }} 条回复</span>
+                        </div>
+                      </button>
+                      <button
+                        class="css-1c66zjl-BaseButtonComponent-OperationButton-CompactOperationButton-CompactOperationOrangeButton"
+                        @click="onFavourChange(reply.id)"
+                      >
+                        <div v-if="!reply.hasFavour" style="display: flex; align-items: center">
+                          <icon-star style="width: 20px; height: 20px" />
+                          <span>收藏</span>
+                        </div>
+                        <div
+                          v-else
+                          style="color: rgba(255, 161, 22, 1); display: flex; align-items: center"
+                        >
+                          <icon-star-fill style="width: 20px; height: 20px" />
+                          <span>已收藏</span>
+                        </div>
+                      </button>
+                      <button class="css-1kpbure-BaseButtonComponent-OperationButton">
+                        <icon-launch style="width: 20px; height: 20px" />
+                        <span>分享</span>
+                      </button>
+                    </div>
+                    <button class="reply-detail-bottom-right" @click="handleReplyToReply(reply)">
+                      <icon-edit style="height: 18px; width: 18px"></icon-edit>
+                      <span style="margin-left: 4px">添加回复</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <reply-editor-modal
@@ -439,6 +620,7 @@ onMounted(() => {
             v-show="show"
             :show="show"
             :postId="route.query.id as unknown as number"
+            :parentReplyId="replyId"
             @update-show="handleShow"
           ></reply-editor-modal>
         </div>
@@ -862,6 +1044,28 @@ onMounted(() => {
   bottom: 0px;
   z-index: 1000;
 }
+.reply-detail-bottom-right {
+  border: none;
+  border-radius: 3px;
+  line-height: 20px;
+  outline: none;
+  user-select: none;
+  text-decoration: none;
+  display: inline-flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  transition-property: color, box-shadow, background-color, opacity;
+  transition-duration: 0.3s;
+  overflow: hidden;
+  cursor: pointer;
+  opacity: 1;
+  background-color: transparent;
+  font-size: 14px;
+  padding: 0px;
+  color: rgba(140, 140, 140, 1);
+}
 .reply {
   border: none;
   border-radius: 3px;
@@ -887,6 +1091,9 @@ onMounted(() => {
   vertical-align: text-bottom;
 }
 .reply:hover {
+  color: rgba(10, 132, 255, 1);
+}
+.reply-detail-bottom-right:hover {
   color: rgba(10, 132, 255, 1);
 }
 .post-tag {

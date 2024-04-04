@@ -10,16 +10,25 @@ const props = defineProps({
   },
   postId: {
     type: Number
+  },
+  parentReplyId: {
+    type: Number
   }
 })
 const visible = ref(false)
 const replyPostId = ref(0)
-watch([() => props.show, () => props.postId], ([show, postId]) => {
-  visible.value = show
-  replyPostId.value = postId as number
-  console.log('show 变化了:', show)
-  console.log('postId 变化了:', postId)
-})
+const newParentReplyId = ref(0)
+watch(
+  [() => props.show, () => props.postId, () => props.parentReplyId],
+  ([show, postId, parentReplyId]) => {
+    visible.value = show
+    replyPostId.value = postId as number
+    newParentReplyId.value = parentReplyId as number
+    console.log('show 变化了:', show)
+    console.log('postId 变化了:', postId)
+    console.log('parentReplyId 变化了:', parentReplyId)
+  }
+)
 const emit = defineEmits(['update-show'])
 const handleCancelClick = () => {
   visible.value = false
@@ -40,13 +49,18 @@ const handleSubmitClick = async () => {
   console.log(replyPostId.value)
   formReply.value.content = mdValue.value
   formReply.value.postId = replyPostId.value
+  if (newParentReplyId.value !== 0) {
+    formReply.value.parentReplyId = newParentReplyId.value
+  }
   const res = await PostReplyControllerService.addPostReplyUsingPost(formReply.value)
   if (res.code === 0) {
     message.success('回复成功')
     console.log('回复成功', res)
     emit('update-show', false)
+    formReply.value.parentReplyId = undefined
     mdValue.value = ''
   }
+  mdValue.value = ''
   // 处理提交逻辑
   console.log('回复内容：', formReply.value)
 }
