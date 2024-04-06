@@ -1209,11 +1209,13 @@ const updateUserData = async (dataList: any[]) => {
       const { userName, userAvatar } = res.data
       item.userName = userName
       item.userAvatar = userAvatar
-
+      console.log(`已获取 id 为 ${item.userId} 的用户信息`)
       // 将结果缓存起来
       userCache[item.userId] = { userName, userAvatar }
     } else {
-      console.error(`获取 id 为 ${item.id} 的用户信息失败`)
+      item.userAvatar =
+        'https://himg.bdimg.com/sys/portraitn/item/03cde88aa5e69cabe59682e58fa3e59abce7b396df8f'
+      item.userName = '未命名用户'
     }
   }
 }

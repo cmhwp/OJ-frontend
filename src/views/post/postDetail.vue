@@ -13,7 +13,7 @@ import { useRoute } from 'vue-router'
 import moment from 'moment/moment'
 import useReplyStore, { type IReply } from '@/stores/reply/reply'
 import message from '@arco-design/web-vue/es/message'
-import reply from '@/stores/reply/reply'
+
 const resData = ref()
 const route = useRoute()
 const dataList = async () => {
@@ -170,9 +170,9 @@ const toggleReplies = async (item: IReply) => {
   if (item.replyNum > 0) {
     item.showReplies = !item.showReplies
     const newSearchParams = {
-      ...searchParams.value,
       parentReplyId: item.id
     }
+    console.log(newSearchParams)
     await PostReplyControllerService.listPostReplyVoByPageUsingPost(newSearchParams).then((res) => {
       if (res.code === 0) {
         replyToReply.value = res.data.records
@@ -197,6 +197,38 @@ const handleNewClick = async () => {
   replyList.value = replyState.replies
 }
 //处理回复的回复
+// 切换当前页码
+// 设置每页的页数
+const customPageSizeOptions = ref([10, 15, 20])
+const onPageChange = (page: number) => {
+  searchParams.value = {
+    ...searchParams.value,
+    current: page
+  }
+  current.value = page
+  router.push({
+    query: {
+      id: route.query.id as unknown as number,
+      pageSize: pageSize.value,
+      current: current.value
+    }
+  })
+}
+// 切换每页显示条数
+const onPageSizeChange = (Size: number) => {
+  searchParams.value = {
+    ...searchParams.value,
+    pageSize: Size
+  }
+  pageSize.value = Size
+  router.push({
+    query: {
+      id: route.query.id as unknown as number,
+      pageSize: pageSize.value,
+      current: current.value
+    }
+  })
+}
 
 const handleShow = (value: boolean) => {
   loadReplyData()
@@ -210,6 +242,7 @@ watch(
   }
 )
 import { watchEffect } from 'vue'
+import router from '@/router'
 
 // 使用 watchEffect 监听 loadReplyData 函数的变化
 watchEffect(() => {
@@ -614,6 +647,40 @@ onMounted(() => {
                 </div>
               </div>
             </div>
+          </div>
+          <div style="height: 100px; margin-top: 20px" v-if="replyState.total != 0">
+            <a-pagination
+              :total="replyState.total"
+              :base-size="5"
+              :buffer-size="2"
+              show-jumper
+              show-page-size
+              @change="onPageChange"
+              @pageSizeChange="onPageSizeChange"
+              :pageSizeOptions="customPageSizeOptions"
+              :current="current"
+              :page-size="pageSize"
+              :page-item-style="{
+                borderRadius: '5px',
+                backgroundColor: '#F2F3F4'
+              }"
+              :active-page-item-style="{
+                boxShadow: '0 1px 4px rgba(0, 0, 0, 0.2)',
+                backgroundColor: '#FFFFFF',
+                color: '#1a1a1a',
+                borderRadius: '5px'
+              }"
+            >
+              <template #page-item="{ page }"> {{ page }}</template>
+              <template #page-item-step="{ type }">
+                <icon-right
+                  :style="type === 'previous' ? { transform: `rotate(180deg)` } : undefined"
+                />
+              </template>
+              <template #page-item-ellipsis>
+                <icon-more :stroke-width="5" />
+              </template>
+            </a-pagination>
           </div>
           <reply-editor-modal
             style="position: fixed; bottom: 0; width: 100%"

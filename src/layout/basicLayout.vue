@@ -2,7 +2,7 @@
   <div id="basic-layout">
     <a-layout style="min-height: 100vh">
       <a-layout-header class="header">
-        <global-header></global-header>
+        <global-header style="z-index: 9999"></global-header>
       </a-layout-header>
       <a-layout-content class="content">
         <router-view />

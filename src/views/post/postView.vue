@@ -364,14 +364,15 @@ interface PostItem {
 }
 
 const current = ref<number>(parseInt(route.query.current as string) || 1)
-const pageSize = ref<number>(parseInt(route.query.pageSize as string) || 15)
+const pageSize = ref<number>(parseInt(route.query.pageSize as string) || 5)
 
 const searchParams = ref<PostQueryRequest>({
   sortOrder: 'descend',
   sortField: 'createTime',
   searchText: '',
   pageSize: pageSize.value,
-  current: current.value
+  current: current.value,
+  status: 'allow'
 })
 const handlePostClick = () => {
   router.push({
@@ -405,8 +406,9 @@ const loadData = async () => {
 const list = ref([])
 
 const listParams = ref<PostQueryRequest>({
+  sortField: 'readNum',
   sortOrder: 'descend',
-  sortField: 'createTime',
+  status: 'allow',
   pageSize: 10,
   current: 1
 })

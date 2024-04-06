@@ -44,15 +44,6 @@ export const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/post/postView.vue')
   },
   {
-    path: '/admin',
-    name: '管理',
-    component: () => import('../views/admin/adminView.vue'),
-    meta: {
-      //管理员
-      Auth: accessEnum.ADMIN
-    }
-  },
-  {
     path: '/add/question',
     name: '创建题目',
     component: () => import('../views/question/addQuestionView.vue'),
@@ -139,6 +130,24 @@ export const routes: Array<RouteRecordRaw> = [
     meta: {
       Auth: AccessEnum.ADMIN,
       show: true
+    }
+  },
+  {
+    path: '/manage/post',
+    name: '帖子管理',
+    component: () => import('../views/post/managePostView.vue'),
+    meta: {
+      Auth: AccessEnum.ADMIN,
+      show: true
+    }
+  },
+  {
+    path: '/admin',
+    name: '大屏浏览',
+    component: () => import('../views/admin/adminView.vue'),
+    meta: {
+      //管理员
+      Auth: accessEnum.ADMIN
     }
   },
   {

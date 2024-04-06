@@ -91,58 +91,67 @@ const handleSwitchClick = (index: number) => {
         }}</a-menu-item>
       </a-menu>
     </a-col>
-    <a-col flex="150px">
-      <a-space>
-        <a-trigger>
-          <div class="icon-sun">
-            <IconSun style="height: 24px; width: 24px" />
-          </div>
-          <template #content>
-            <div class="theme-select">
-              <a-space
-                direction="vertical"
-                style="display: flex; flex-direction: column; align-items: center"
-              >
+    <a-col
+      flex="1"
+      style="
+        background-color: white;
+        height: 78px;
+        display: flex;
+        flex-wrap: nowrap;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <a-trigger>
+        <div class="icon-sun">
+          <IconSun style="height: 24px; width: 24px" />
+        </div>
+        <template #content>
+          <div class="theme-select">
+            <a-space
+              direction="vertical"
+              style="display: flex; flex-direction: column; align-items: center"
+            >
+              <a-list>
                 <a-list>
                   <a-list>
-                    <a-list>
-                      <a-list-item
-                        style="cursor: pointer"
-                        class="list-change"
-                        @click="handleSwitchClick(0)"
-                        >黑暗模式</a-list-item
-                      >
-                      <a-list-item
-                        style="cursor: pointer"
-                        class="list-change"
-                        @click="handleSwitchClick(1)"
-                        >亮色模式</a-list-item
-                      >
-                    </a-list>
+                    <a-list-item
+                      style="cursor: pointer"
+                      class="list-change"
+                      @click="handleSwitchClick(0)"
+                      >黑暗模式</a-list-item
+                    >
+                    <a-list-item
+                      style="cursor: pointer"
+                      class="list-change"
+                      @click="handleSwitchClick(1)"
+                      >亮色模式</a-list-item
+                    >
                   </a-list>
                 </a-list>
-              </a-space>
-            </div>
+              </a-list>
+            </a-space>
+          </div>
+        </template>
+      </a-trigger>
+      <div v-if="JSON.stringify(userInfo.id.value) === '-1'">
+        <span class="registration-text" @click="doRegister">注册</span>
+        <a-divider direction="vertical" size="0" :margin="5" />
+        <span style="color: #0000008c; font-size: 14px">或</span>
+        <a-divider direction="vertical" size="0" :margin="5" />
+        <span class="registration-text" @click="doLogin">登录</span>
+      </div>
+      <div v-else style="margin-left: 10px">
+        <a-trigger :popup-translate="[-130, 20]" :popup-visible="show">
+          <a-avatar :size="27" style="cursor: pointer" @click="show = !show">
+            <img alt="avatar" :src="userAvatar" />
+          </a-avatar>
+          <template #content>
+            <SetCenter @click="show = !show" />
           </template>
         </a-trigger>
-        <div v-if="JSON.stringify(userInfo.id.value) === '-1'">
-          <span class="registration-text" @click="doRegister">注册</span>
-          <a-divider direction="vertical" size="0" :margin="5" />
-          <span style="color: #0000008c; font-size: 14px">或</span>
-          <a-divider direction="vertical" size="0" :margin="5" />
-          <span class="registration-text" @click="doLogin">登录</span>
-        </div>
-        <div v-else style="margin-left: 10px">
-          <a-trigger :popup-translate="[-130, 20]" :popup-visible="show">
-            <a-avatar :size="27" style="cursor: pointer" @click="show = !show">
-              <img alt="avatar" :src="userAvatar" />
-            </a-avatar>
-            <template #content>
-              <SetCenter @click="show = !show" />
-            </template>
-          </a-trigger>
-        </div>
-      </a-space>
+      </div>
     </a-col>
   </a-row>
 </template>
