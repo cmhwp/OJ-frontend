@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { UserControllerService } from '../../../generated'
+import router from '@/router'
 const uploadFile = ref<string>()
 const userInfoForm = reactive({
   userName: '',
@@ -33,6 +34,7 @@ const onNext = async () => {
       userProfile
     }).then((res) => {
       console.log(res)
+      router.push('/')
     })
   }
 }

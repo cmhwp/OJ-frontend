@@ -55,7 +55,7 @@ watch(() => userInfo.userRole.value, updateRouteList)
 updateRouteList()
 const doRegister = () => {
   router.push({
-    path: '/register'
+    path: '/user/login'
   })
 }
 const doLogin = () => {

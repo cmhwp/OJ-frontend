@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import type { IAccount } from '@/type/user'
-import { UserControllerService } from '../../../generated'
+import { UserControllerService, type UserRegisterRequest } from '../../../generated'
 import accessEnum from '@/utils/access/accessEnum'
 import router from '@/router'
 import message from '@arco-design/web-vue/es/message'
@@ -21,7 +21,7 @@ interface IUserState {
   position: string
 }
 const useUserStore = defineStore('user', {
-  persist: true,
+  persist: false,
   state: (): IUserState => ({
     id: -1,
     userName: '',
@@ -45,6 +45,7 @@ const useUserStore = defineStore('user', {
         const res = await UserControllerService.getLoginUserUsingGet()
         console.log(res)
         if (res.code === 0) {
+          message.success('登录成功')
           // 存储用户信息
           this.id = <number>res.data?.id
           this.userName = <string>res.data?.userName
@@ -100,6 +101,19 @@ const useUserStore = defineStore('user', {
         location.reload()
       } else {
         message.error('注销失败:' + res.message)
+      }
+    },
+    async userRegisterAction(payload: UserRegisterRequest) {
+      const res = await UserControllerService.userRegisterUsingPost(payload)
+      if (res.code === 0) {
+        message.success('注册成功')
+        const { userAccount, userPassword } = { ...payload }
+        console.log(userAccount, userPassword)
+        await this.loginAccountAction({ userAccount, userPassword })
+        await this.getLoginUserAction()
+        await router.push('/user/userInfo')
+      } else {
+        message.error('注册失败:' + res.message)
       }
     }
   }

@@ -9,6 +9,7 @@ import 'highlight.js/styles/stackoverflow-light.css'
 import hljs from 'highlight.js/lib/core'
 import java from 'highlight.js/lib/languages/java'
 import hljsVuePlugin from '@highlightjs/vue-plugin'
+import '@/plugins/axios'
 hljs.registerLanguage('java', java)
 const app = createApp(App)
 app.use(stores)
