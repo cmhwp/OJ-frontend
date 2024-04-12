@@ -864,150 +864,24 @@
                       <a-form :model="form" layout="inline" size="small" style="margin-left: -15px">
                         <a-form-item field="language">
                           <a-trigger trigger="click" :unmount-on-close="false" position="bl">
-                            <button
-                              class="language"
-                              style="color: #0000008c; width: 60px; height: 24px"
+                            <a-dropdown
+                              v-model:visible="dropdownVisible"
+                              placement="bottomLeft"
+                              @select="handleSelect"
                             >
-                              {{ form.language }}
-                              <icon-down />
-                            </button>
-                            <template #content>
-                              <div
-                                style="
-                                  width: 470px;
-                                  height: 272px;
-                                  background-color: #fffffe;
-                                  border-radius: 10px;
-                                  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-                                  margin-top: 10px;
-                                  padding: 8px;
-                                  display: flex;
-                                "
+                              <button
+                                class="language"
+                                style="color: #0000008c; width: 60px; height: 24px"
                               >
-                                <div style="width: 149px">
-                                  <button
-                                    class="language"
-                                    style="width: 140px; height: 32px; margin-bottom: 2px"
-                                  >
-                                    C ++
-                                  </button>
-                                  <button
-                                    class="language"
-                                    style="width: 140px; height: 32px; margin-bottom: 2px"
-                                  >
-                                    Java
-                                  </button>
-                                  <button
-                                    class="language"
-                                    style="width: 140px; height: 32px; margin-bottom: 2px"
-                                  >
-                                    Python
-                                  </button>
-                                  <button
-                                    class="language"
-                                    style="width: 140px; height: 32px; margin-bottom: 2px"
-                                  >
-                                    Python3
-                                  </button>
-                                  <button
-                                    class="language"
-                                    style="width: 140px; height: 32px; margin-bottom: 2px"
-                                  >
-                                    C
-                                  </button>
-                                  <button
-                                    class="language"
-                                    style="width: 140px; height: 32px; margin-bottom: 2px"
-                                  >
-                                    C#
-                                  </button>
-                                  <button
-                                    class="language"
-                                    style="width: 140px; height: 32px; margin-bottom: 2px"
-                                  >
-                                    JavaScript
-                                  </button>
-                                  <button
-                                    class="language"
-                                    style="width: 140px; height: 32px; margin-bottom: 2px"
-                                  >
-                                    TypeScript
-                                  </button>
-                                </div>
-                                <a-divider direction="vertical" />
-                                <div style="width: 149px">
-                                  <button
-                                    class="language"
-                                    style="width: 140px; height: 32px; margin-bottom: 2px"
-                                  >
-                                    PHP
-                                  </button>
-                                  <button
-                                    class="language"
-                                    style="width: 140px; height: 32px; margin-bottom: 2px"
-                                  >
-                                    Swift
-                                  </button>
-                                  <button
-                                    class="language"
-                                    style="width: 140px; height: 32px; margin-bottom: 2px"
-                                  >
-                                    Kotlin
-                                  </button>
-                                  <button
-                                    class="language"
-                                    style="width: 140px; height: 32px; margin-bottom: 2px"
-                                  >
-                                    Dart
-                                  </button>
-                                  <button
-                                    class="language"
-                                    style="width: 140px; height: 32px; margin-bottom: 2px"
-                                  >
-                                    Go
-                                  </button>
-                                  <button
-                                    class="language"
-                                    style="width: 140px; height: 32px; margin-bottom: 2px"
-                                  >
-                                    Ruby
-                                  </button>
-                                  <button
-                                    class="language"
-                                    style="width: 140px; height: 32px; margin-bottom: 2px"
-                                  >
-                                    Scala
-                                  </button>
-                                  <button
-                                    class="language"
-                                    style="width: 140px; height: 32px; margin-bottom: 2px"
-                                  >
-                                    Rust
-                                  </button>
-                                </div>
-                                <a-divider direction="vertical" />
-                                <div style="width: 149px">
-                                  <button
-                                    class="language"
-                                    style="width: 140px; height: 32px; margin-bottom: 2px"
-                                  >
-                                    Racket
-                                  </button>
-                                  <button
-                                    class="language"
-                                    style="width: 140px; height: 32px; margin-bottom: 2px"
-                                  >
-                                    Erlang
-                                  </button>
-                                  <button
-                                    class="language"
-                                    style="width: 140px; height: 32px; margin-bottom: 2px"
-                                  >
-                                    Elixir
-                                  </button>
-                                </div>
-                              </div>
-                            </template>
+                                {{ form.language }}
+                                <icon-down />
+                              </button>
+                              <template #content>
+                                <a-doption>cpp</a-doption>
+                                <a-doption>java</a-doption>
+                                <a-doption>go</a-doption>
+                              </template>
+                            </a-dropdown>
                           </a-trigger>
                         </a-form-item>
                       </a-form>
@@ -1749,7 +1623,9 @@ import {
   QuestionControllerService,
   type QuestionQueryRequest,
   type QuestionSubmitAddRequest,
-  QuestionSubmitControllerService
+  QuestionSubmitControllerService,
+  QuestionThumbControllerService,
+  QuestionFavourControllerService
 } from '../../../generated'
 import { useRoute, useRouter } from 'vue-router'
 import useUserStore from '@/stores/user/user'
@@ -1961,38 +1837,38 @@ const loadData = async () => {
   } else {
     message.error('加载失败，' + questionRes.message)
   }
-  // // 初始点赞状态
-  // const likeRes = await QuestionThumbControllerService.getQuestionThumbStatusUsingGet(
-  //   question.value.id
-  // )
-  // if (likeRes.code === 0) {
-  //   isLike.value = likeRes.data
-  // } else {
-  //   message.error('点赞状态失败：' + likeRes.message)
-  // }
-  // // 初始收藏状态
-  // const collectRes = await QuestionFavourControllerService.getQuestionFavourStatusUsingGet(
-  //   question.value.id
-  // )
-  // if (collectRes.code === 0) {
-  //   isCollect.value = collectRes.data
-  // } else {
-  //   message.error('收藏状态失败：' + collectRes.message)
-  // }
+  // 初始点赞状态
+  const likeRes = await QuestionThumbControllerService.getQuestionThumbStatusUsingGet(
+    question.value.id
+  )
+  if (likeRes.code === 0) {
+    isLike.value = likeRes.data
+  } else {
+    message.error('点赞状态失败：' + likeRes.message)
+  }
+  // 初始收藏状态
+  const collectRes = await QuestionFavourControllerService.getQuestionFavourStatusUsingGet(
+    question.value.id
+  )
+  if (collectRes.code === 0) {
+    isCollect.value = collectRes.data
+  } else {
+    message.error('收藏状态失败：' + collectRes.message)
+  }
 }
 
 // 点赞
 const isLike = ref()
 const onLikeChange = async () => {
-  // const res = await QuestionThumbControllerService.doQuestionThumbUsingPost({
-  //   questionId: question.value.id
-  // })
-  // if (res.code === 0) {
-  //   question.value.thumbNum += res.data === 1 ? 1 : -1
-  //   isLike.value = res.data === 1 ? 1 : -1
-  // } else {
-  //   message.error('点赞失败：' + res.message)
-  // }
+  const res = await QuestionThumbControllerService.doQuestionThumbUsingPost({
+    questionId: question.value.id
+  })
+  if (res.code === 0) {
+    question.value.thumbNum += res.data === 1 ? 1 : -1
+    isLike.value = res.data === 1 ? 1 : -1
+  } else {
+    message.error('点赞失败：' + res.message)
+  }
 }
 
 /**
@@ -2002,20 +1878,22 @@ const onLikeChange = async () => {
 
 const isCollect = ref()
 const onStarChange = async () => {
-  // const res = await QuestionFavourControllerService.doQuestionFavourUsingPost({
-  //   questionId: question.value.id
-  // })
-  // if (res.code === 0) {
-  //   isCollect.value = res.data === 1 ? 1 : -1
-  // } else {
-  //   message.error('收藏失败：' + res.message)
-  // }
+  const res = await QuestionFavourControllerService.doQuestionFavourUsingPost({
+    questionId: question.value.id
+  })
+  if (res.code === 0) {
+    isCollect.value = res.data === 1 ? 1 : -1
+  } else {
+    message.error('收藏失败：' + res.message)
+  }
 }
 
 const form = ref<QuestionSubmitAddRequest>({
   language: 'java'
 })
-
+const handleSelect = (v: any) => {
+  form.value.language = v
+}
 // 还原到默认的代码模板
 
 const isInitialise = ref(false)
@@ -2081,6 +1959,7 @@ const actualOutput = ref([])
 // 实际输出
 const expectedOutput = ref([])
 
+const dropdownVisible = ref(false)
 // 运作状态
 const runStatus = ref(0)
 
@@ -2090,6 +1969,7 @@ const doRun = async () => {
     return
   }
   isRotate.value = true
+  console.log(inputList.value)
   const res = await QuestionSubmitControllerService.doQuestionRunUsingPost({
     ...form.value,
     inputList: inputList.value as any,

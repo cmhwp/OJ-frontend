@@ -109,7 +109,7 @@ const useUserStore = defineStore('user', {
         message.success('注册成功')
         const { userAccount, userPassword } = { ...payload }
         console.log(userAccount, userPassword)
-        await this.loginAccountAction({ userAccount, userPassword })
+        await this.loginAccountAction(<IAccount>{ userAccount, userPassword })
         await this.getLoginUserAction()
         await router.push('/user/userInfo')
       } else {

@@ -63,6 +63,8 @@ export type { Question } from './models/Question';
 export type { QuestionAddRequest } from './models/QuestionAddRequest';
 export type { QuestionDifficultyResponse } from './models/QuestionDifficultyResponse';
 export type { QuestionEditRequest } from './models/QuestionEditRequest';
+export type { QuestionFavourAddRequest } from './models/QuestionFavourAddRequest';
+export type { QuestionFavourQueryRequest } from './models/QuestionFavourQueryRequest';
 export type { QuestionQueryRequest } from './models/QuestionQueryRequest';
 export type { QuestionRunAddRequest } from './models/QuestionRunAddRequest';
 export type { QuestionSubmitAddRequest } from './models/QuestionSubmitAddRequest';
@@ -72,6 +74,7 @@ export type { QuestionSubmitRunResultResponse } from './models/QuestionSubmitRun
 export type { QuestionSubmitStatusResponse } from './models/QuestionSubmitStatusResponse';
 export type { QuestionSubmitUpdateRequest } from './models/QuestionSubmitUpdateRequest';
 export type { QuestionSubmitVO } from './models/QuestionSubmitVO';
+export type { QuestionThumbAddRequest } from './models/QuestionThumbAddRequest';
 export type { QuestionUpdateRequest } from './models/QuestionUpdateRequest';
 export type { QuestionVO } from './models/QuestionVO';
 export type { ReplyFavourAddRequest } from './models/ReplyFavourAddRequest';
@@ -93,7 +96,9 @@ export { PostReadControllerService } from './services/PostReadControllerService'
 export { PostReplyControllerService } from './services/PostReplyControllerService';
 export { PostThumbControllerService } from './services/PostThumbControllerService';
 export { QuestionControllerService } from './services/QuestionControllerService';
+export { QuestionFavourControllerService } from './services/QuestionFavourControllerService';
 export { QuestionSubmitControllerService } from './services/QuestionSubmitControllerService';
+export { QuestionThumbControllerService } from './services/QuestionThumbControllerService';
 export { ReplyFavourControllerService } from './services/ReplyFavourControllerService';
 export { ReplyThumbControllerService } from './services/ReplyThumbControllerService';
 export { UserControllerService } from './services/UserControllerService';

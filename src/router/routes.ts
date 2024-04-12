@@ -142,15 +142,6 @@ export const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: '/admin',
-    name: '大屏浏览',
-    component: () => import('../views/admin/adminView.vue'),
-    meta: {
-      //管理员
-      Auth: accessEnum.ADMIN
-    }
-  },
-  {
     path: '/:pathMatch(.*)*',
     component: () => import('../views/notFound/not-foundView.vue')
   }

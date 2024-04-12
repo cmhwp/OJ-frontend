@@ -821,8 +821,7 @@
               </template>
             </calendar-collapse>
           </div>
-          <!--TODO-->
-          <div style="margin-left: 10px">
+          <div v-if="store.id" style="margin-left: 10px">
             <div
               style="
                 width: 270px;
@@ -910,7 +909,7 @@
                     v-if="questionSubmitPassRateNumShow"
                   >
                     <a-statistic
-                      :value="questionSubmitPassRateNum * 100"
+                      :value="passRate * 100"
                       :precision="1"
                       :value-style="{
                         color: '#1c1c1c',
@@ -1043,7 +1042,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watchEffect } from 'vue'
+import { onMounted, ref, watchEffect } from 'vue'
 import {
   QuestionControllerService,
   type QuestionQueryRequest,
@@ -1052,11 +1051,14 @@ import {
 import message from '@arco-design/web-vue/es/message'
 import { useRoute, useRouter } from 'vue-router'
 import CalendarService from '@/components/calendar/calendar-service'
-import { Image1, Image2, Image3, Image4, Image5, Image6, Image7 } from '@/assets/image/imgExport'
+import useUserStore from '@/stores/user/user'
+import {Image1, Image2, Image3, Image4, Image5, Image6, Image7} from '@/assets/image/imgExport'
+
 CalendarService.initMonthDateList()
 
 const router = useRouter()
 const route = useRoute()
+const store = useUserStore()
 
 const basicIcon = ref(false)
 
@@ -1391,9 +1393,6 @@ const mediumSubmissionPassRateNumShow = ref(false)
 // 困难题目提交通过率是否显示
 const difficultySubmissionPassRateNumShow = ref(false)
 
-// 题目提交通过率
-const questionSubmitPassRateNum = ref(0)
-
 // 题目总数
 const questionNumber = ref(0)
 
@@ -1412,68 +1411,6 @@ const loadData = async () => {
 
   // 获取题目状态
   // await StatusData(dataList.value);
-
-  await statusMessages()
-
-  // 获取不同难度的题目数量
-  const difficultyRes = await QuestionControllerService.getQuestionDifficultyUsingGet()
-  if (difficultyRes.code == 0 && difficultyRes.data) {
-    briefnessNum.value = difficultyRes.data.simpleQuestionNum as number
-    mediumNum.value = difficultyRes.data.mediumQuestionNum as number
-    difficultyNum.value = difficultyRes.data.difficultQuestionNum as number
-  }
-
-  const briefnessPassRes =
-    await QuestionSubmitControllerService.getQuestionSubmitDifficultyUsingGet(1)
-  if (briefnessPassRes.code == 0) {
-    briefnessPassNum.value = briefnessPassRes.data as number
-  }
-  const mediumPassRes = await QuestionSubmitControllerService.getQuestionSubmitDifficultyUsingGet(2)
-  if (mediumPassRes.code == 0) {
-    mediumPassNum.value = mediumPassRes.data as number
-  }
-  const difficultyPassRes =
-    await QuestionSubmitControllerService.getQuestionSubmitDifficultyUsingGet(3)
-  if (difficultyPassRes.code == 0) {
-    difficultyPassNum.value = difficultyPassRes.data as number
-  }
-  const briefnessSubmissionPassRateRes =
-    await QuestionSubmitControllerService.getQuestionSubmitDifficultyPassRateUsingGet(1)
-  if (briefnessSubmissionPassRateRes.code == 0) {
-    briefnessSubmissionPassRateNum.value = briefnessSubmissionPassRateRes.data as number
-  }
-  const mediumSubmissionPassRateRes =
-    await QuestionSubmitControllerService.getQuestionSubmitDifficultyPassRateUsingGet(2)
-  if (mediumSubmissionPassRateRes.code == 0) {
-    mediumSubmissionPassRateNum.value = mediumSubmissionPassRateRes.data as number
-  }
-  const difficultySubmissionPassRateRes =
-    await QuestionSubmitControllerService.getQuestionSubmitDifficultyPassRateUsingGet(3)
-  if (difficultySubmissionPassRateRes.code == 0) {
-    difficultySubmissionPassRateNum.value = difficultySubmissionPassRateRes.data as number
-  }
-  const questionSubmitPassRateRes =
-    await QuestionSubmitControllerService.getQuestionSubmitPassRateUsingGet()
-  if (questionSubmitPassRateRes.code == 0) {
-    questionSubmitPassRateNum.value = questionSubmitPassRateRes.data as number
-  }
-  const throughSum = computed(() => {
-    return (
-      Number(briefnessPassNum.value) + Number(mediumPassNum.value) + Number(difficultyPassNum.value)
-    )
-  })
-  throughNumber.value = throughSum.value
-
-  const Sum = computed(() => {
-    return Number(briefnessNum.value) + Number(mediumNum.value) + Number(difficultyNum.value)
-  })
-  questionNumber.value = Sum.value
-
-  const passRateNum = computed(() => {
-    const result = throughNumber.value / questionNumber.value
-    return result.toFixed(2) // 保留两位小数
-  })
-  passRate.value = passRateNum.value
 }
 
 // 获取当前用户通过的题目id 和 未通过题目id
@@ -1498,12 +1435,34 @@ watchEffect(() => {
   loadData()
 })
 
+// 进度条数据
+const progressData = async () => {
+  await statusMessages()
+  // 获取不同难度的题目数量
+  const difficultyRes = await QuestionControllerService.getQuestionDifficultyUsingGet()
+  if (difficultyRes.code == 0 && difficultyRes.data) {
+    briefnessNum.value = difficultyRes.data.simpleQuestionNum as number
+    mediumNum.value = difficultyRes.data.mediumQuestionNum as number
+    difficultyNum.value = difficultyRes.data.difficultQuestionNum as number
+    briefnessPassNum.value = difficultyRes.data.simplePassNum as number
+    mediumPassNum.value = difficultyRes.data.mediumPassNum as number
+    difficultyPassNum.value = difficultyRes.data.difficultyPassNum as number
+    briefnessSubmissionPassRateNum.value = difficultyRes.data.simpleSubmissionPassRateNum as number
+    mediumSubmissionPassRateNum.value = difficultyRes.data.mediumSubmissionPassRateNum as number
+    difficultySubmissionPassRateNum.value = difficultyRes.data
+      .difficultySubmissionPassRateNum as number
+    throughNumber.value = difficultyRes.data.throughNumber as number
+    questionNumber.value = difficultyRes.data.questionSumNumber as number
+    passRate.value = difficultyRes.data.passRateNum as number
+  }
+}
+
 /**
  * 页面加载时，请求数据
  */
-// onMounted(() => {
-//   loadData();
-// });
+onMounted(() => {
+  progressData()
+})
 
 // 改变页码
 const onPageChange = (page: number) => {
@@ -1946,11 +1905,14 @@ const closeTagsList = () => {
 
 <style scoped>
 #questionsView {
-  margin: 90px 10px 20px 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 90px 10px 20px 10px;
 }
 
 .right {
-  margin-left: 10px;
+  margin-left: 50px;
 }
 
 .calendar {
