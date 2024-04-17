@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div>用户注册</div>
+  <div>找回密码</div>
 </template>
 
 <style scoped></style>

@@ -1052,7 +1052,7 @@ import message from '@arco-design/web-vue/es/message'
 import { useRoute, useRouter } from 'vue-router'
 import CalendarService from '@/components/calendar/calendar-service'
 import useUserStore from '@/stores/user/user'
-import {Image1, Image2, Image3, Image4, Image5, Image6, Image7} from '@/assets/image/imgExport'
+import { Image1, Image2, Image3, Image4, Image5, Image6, Image7 } from '@/assets/image/imgExport'
 
 CalendarService.initMonthDateList()
 

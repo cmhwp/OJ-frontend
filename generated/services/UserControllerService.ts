@@ -11,9 +11,11 @@ import type { BaseResponse_User_ } from '../models/BaseResponse_User_';
 import type { BaseResponse_UserVO_ } from '../models/BaseResponse_UserVO_';
 import type { DeleteRequest } from '../models/DeleteRequest';
 import type { UserAddRequest } from '../models/UserAddRequest';
+import type { UserLoginEmailRequest } from '../models/UserLoginEmailRequest';
 import type { UserLoginRequest } from '../models/UserLoginRequest';
 import type { UserQueryRequest } from '../models/UserQueryRequest';
 import type { UserRegisterRequest } from '../models/UserRegisterRequest';
+import type { UserResetPasswordRequest } from '../models/UserResetPasswordRequest';
 import type { UserUpdateMyRequest } from '../models/UserUpdateMyRequest';
 import type { UserUpdateRequest } from '../models/UserUpdateRequest';
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -186,6 +188,27 @@ export class UserControllerService {
         });
     }
     /**
+     * userLoginByEmail
+     * @param userLoginEmailRequest userLoginEmailRequest
+     * @returns BaseResponse_LoginUserVO_ OK
+     * @returns any Created
+     * @throws ApiError
+     */
+    public static userLoginByEmailUsingPost(
+        userLoginEmailRequest: UserLoginEmailRequest,
+    ): CancelablePromise<BaseResponse_LoginUserVO_ | any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/user/login/email',
+            body: userLoginEmailRequest,
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+    /**
      * userLoginByWxOpen
      * @param code code
      * @returns BaseResponse_LoginUserVO_ OK
@@ -238,6 +261,27 @@ export class UserControllerService {
             method: 'POST',
             url: '/api/user/register',
             body: userRegisterRequest,
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+    /**
+     * resetPassword
+     * @param userResetPasswordRequest userResetPasswordRequest
+     * @returns BaseResponse_long_ OK
+     * @returns any Created
+     * @throws ApiError
+     */
+    public static resetPasswordUsingPost(
+        userResetPasswordRequest: UserResetPasswordRequest,
+    ): CancelablePromise<BaseResponse_long_ | any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/user/reset/password',
+            body: userResetPasswordRequest,
             errors: {
                 401: `Unauthorized`,
                 403: `Forbidden`,

@@ -10,9 +10,9 @@ export const routes: Array<RouteRecordRaw> = [
     children: [
       { path: 'login', name: '登录', component: () => import('../views/user/userLoginView.vue') },
       {
-        path: 'register',
-        name: '注册',
-        component: () => import('../views/user/userRegisterView.vue')
+        path: 'email_register',
+        name: '邮箱注册',
+        component: () => import('../views/user/userLoginByEmailView.vue')
       },
       {
         path: 'userInfo',

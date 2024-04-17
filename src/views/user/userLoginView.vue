@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import image from '@/assets/logo.svg'
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch, onBeforeUnmount } from 'vue'
 import SlideCode from '@/components/slideCode.vue'
 import useUserStore from '@/stores/user/user'
 import router from '@/router'
@@ -9,6 +9,8 @@ import {
   Account_Verification,
   Password_Verification
 } from '@/utils/userRule/accountConfig'
+import { CodeControllerService } from '../../../generated'
+import { Notification } from '@arco-design/web-vue'
 //表单信息
 const form = reactive({
   userAccount: '',
@@ -56,6 +58,66 @@ const handleChoose = () => {
     defaultValue.value = 1
   }
 }
+//邮箱登录
+const formEmail = reactive({
+  email: '',
+  code: ''
+})
+const handleEmailClick = () => {
+  modalVisible.value = true
+}
+const handleSendEmail = async () => {
+  await CodeControllerService.sendEmailLoginCodeUsingGet(formEmail.email).then((res) => {
+    if (res.code === 0) {
+      startCountdown()
+      Notification.success({
+        title: '发送成功',
+        content: '验证码已发送至您的邮箱，请注意查收。',
+        duration: 3000
+      })
+    }
+  })
+}
+const modalVisible = ref(false)
+
+const handleOk = async () => {
+  modalVisible.value = false
+  await loginState.userLoginByEmailAction(formEmail)
+  console.log(formEmail)
+}
+const handleCancel = () => {
+  modalVisible.value = false
+}
+//计时器
+const countdown = ref(0)
+let timer: NodeJS.Timeout | null = null // 手动声明 timer 变量的类型
+const startCountdown = () => {
+  countdown.value = 60 // 设置倒计时时间
+  timer = setInterval(() => {
+    if (countdown.value > 0) {
+      countdown.value--
+    } else {
+      clearInterval(timer!) // 倒计时结束，清除计时器
+      timer = null
+    }
+  }, 1000) // 每隔一秒执行一次倒计时
+}
+
+watch(countdown, (newValue) => {
+  // 在倒计时结束后清除计时器
+  if (newValue === 0 && timer) {
+    clearInterval(timer)
+    timer = null
+  }
+})
+
+onBeforeUnmount(() => {
+  // 在组件销毁前清除计时器，避免内存泄漏
+  if (timer) {
+    clearInterval(timer)
+  }
+})
+
 const toggleToLogin = () => {
   defaultValue.value = 1
 }
@@ -139,9 +201,18 @@ const toggleToLogin = () => {
               <div style="border: 1px solid #e5e5e5; padding: 10px; border-radius: 50%">
                 <icon-wechat :size="19" style="color: #00ca00; cursor: pointer" />
               </div>
-              <div style="border: 1px solid #e5e5e5; padding: 10px; border-radius: 50%">
-                <icon-more :size="19" />
-              </div>
+              <a-popover position="rb">
+                <div style="border: 1px solid #e5e5e5; padding: 10px; border-radius: 50%">
+                  <icon-more :size="19" />
+                </div>
+                <template #content>
+                  <icon-email
+                    :size="25"
+                    style="color: rgb(254, 224, 130)"
+                    @click="handleEmailClick"
+                  />
+                </template>
+              </a-popover>
             </a-space>
           </a-form-item>
           <a-form-item class="user-protocol">
@@ -210,9 +281,18 @@ const toggleToLogin = () => {
               <div style="border: 1px solid #e5e5e5; padding: 10px; border-radius: 50%">
                 <icon-wechat :size="19" style="color: #00ca00; cursor: pointer" />
               </div>
-              <div style="border: 1px solid #e5e5e5; padding: 10px; border-radius: 50%">
-                <icon-more :size="19" />
-              </div>
+              <a-popover position="rb">
+                <div style="border: 1px solid #e5e5e5; padding: 10px; border-radius: 50%">
+                  <icon-more :size="19" />
+                </div>
+                <template #content>
+                  <icon-email
+                    :size="25"
+                    style="color: rgb(254, 224, 130)"
+                    @click="handleEmailClick"
+                  />
+                </template>
+              </a-popover>
             </a-space>
           </a-form-item>
           <a-form-item
@@ -237,6 +317,46 @@ const toggleToLogin = () => {
         </a-form>
       </a-tab-pane>
     </a-tabs>
+    <a-modal v-model:visible="modalVisible" @ok="handleOk" @cancel="handleCancel">
+      <template #title>
+        <div style="display: flex; justify-content: center; align-items: center">
+          <icon-email :size="25" style="color: rgb(254, 224, 130); margin-right: 5px" />
+          <h3>邮箱一键登录</h3>
+        </div>
+      </template>
+      <div>
+        <a-form
+          :model="formEmail"
+          style="width: 100%; margin: 0 auto"
+          label-align="left"
+          auto-label-width
+        >
+          <a-form-item field="email">
+            <a-input
+              class="login-input-email"
+              placeholder="请输入邮箱"
+              allow-clear
+              v-model="formEmail.email"
+            >
+              <template #append>
+                <a-button type="primary" :disabled="countdown > 0" @click="handleSendEmail">{{
+                  countdown > 0 ? countdown + 's 后重新发送' : '发送验证码'
+                }}</a-button>
+              </template>
+            </a-input>
+          </a-form-item>
+          <a-form-item field="code">
+            <a-input
+              class="login-input-email"
+              placeholder="请输入验证码"
+              allow-clear
+              v-model="formEmail.code"
+            >
+            </a-input>
+          </a-form-item>
+        </a-form>
+      </div>
+    </a-modal>
   </div>
 </template>
 <style scoped>
@@ -273,6 +393,14 @@ const toggleToLogin = () => {
   border-radius: 10px;
   border: 1px solid #e5e5e5; /* 设置边框颜色为灰色 */
   background: rgba(255, 255, 255, 1);
+}
+.login-input-email {
+  height: 40px;
+  text-indent: 10px; /* 将文本和光标向右移动 5px */
+  border-radius: 10px;
+  border: 1px solid #e5e5e5; /* 设置边框颜色为灰色 */
+  background: rgba(255, 255, 255, 1);
+  width: 70%;
 }
 :deep(.arco-input-wrapper .arco-input) {
   width: 300px;

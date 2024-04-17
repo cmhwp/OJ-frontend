@@ -1,6 +1,10 @@
 import { defineStore } from 'pinia'
 import type { IAccount } from '@/type/user'
-import { UserControllerService, type UserRegisterRequest } from '../../../generated'
+import {
+  UserControllerService,
+  type UserLoginEmailRequest,
+  type UserRegisterRequest
+} from '../../../generated'
 import accessEnum from '@/utils/access/accessEnum'
 import router from '@/router'
 import message from '@arco-design/web-vue/es/message'
@@ -114,6 +118,21 @@ const useUserStore = defineStore('user', {
         await router.push('/user/userInfo')
       } else {
         message.error('注册失败:' + res.message)
+      }
+    },
+    async userLoginByEmailAction(payload: UserLoginEmailRequest) {
+      const res = await UserControllerService.userLoginByEmailUsingPost(payload)
+      if (res.code === 0) {
+        message.success('注册成功')
+        // 明确指定 userAccount 和 userPassword 的类型
+        const userAccount = payload.email
+        const userPassword = payload.email
+        console.log(userAccount, userPassword)
+        await this.loginAccountAction(<IAccount>{ userAccount, userPassword })
+        await this.getLoginUserAction()
+        await router.push('/user/userInfo')
+      } else {
+        message.error('注册登陆失败:' + res.message)
       }
     }
   }

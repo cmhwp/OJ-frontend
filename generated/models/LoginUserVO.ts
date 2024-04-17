@@ -7,6 +7,7 @@ export type LoginUserVO = {
     birthday?: string;
     company?: string;
     createTime?: string;
+    email?: string;
     gender?: number;
     gitHubName?: string;
     id?: number;

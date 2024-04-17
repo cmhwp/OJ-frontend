@@ -6,10 +6,14 @@ export type UserVO = {
     address?: string;
     birthday?: string;
     company?: string;
+    concernNum?: number;
     createTime?: string;
+    email?: string;
+    fansNum?: number;
     gender?: number;
     gitHubName?: string;
     id?: number;
+    isConcern?: boolean;
     position?: string;
     school?: string;
     tags?: string;
