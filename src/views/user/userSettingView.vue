@@ -4,6 +4,7 @@ import { Image15 } from '@/assets/image/imgExport'
 import { computed, ref, onMounted, watchEffect } from 'vue'
 import { UserControllerService } from '../../../generated'
 import message from '@arco-design/web-vue/es/message'
+import router from '@/router'
 
 const loginUser = useUserStore()
 const name = computed(() => {
@@ -164,6 +165,12 @@ const handleUpdateAvatar = (value: any) => {
     ? (formRef.value.userAvatar = uploadFile.value)
     : loginUser.userAvatar
 }
+//跳转用户密码设置界面
+const handleSettingClick = () => {
+  router.push({
+    path: '/user/setting'
+  })
+}
 onMounted(() => {
   updateInfo()
 })
@@ -246,7 +253,7 @@ onMounted(() => {
                   个人简历
                 </a>
               </div>
-              <div class="user-item">
+              <div class="user-item" @click="handleSettingClick">
                 <a class="user-item-a">
                   <icon-lock class="user-item-icon"></icon-lock>
                   账号安全

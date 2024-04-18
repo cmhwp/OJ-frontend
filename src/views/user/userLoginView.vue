@@ -75,6 +75,12 @@ const handleSendEmail = async () => {
         content: '验证码已发送至您的邮箱，请注意查收。',
         duration: 3000
       })
+    } else {
+      Notification.error({
+        title: '发送失败',
+        content: '验证码发送失败，请稍后重试或联系管理员。' + '错误信息' + res.message,
+        duration: 3000
+      })
     }
   })
 }
@@ -184,9 +190,12 @@ const toggleToLogin = () => {
               登录
             </a-button>
           </a-form-item>
-          <a-form-item>
-            <span class="login-text">账号密码登录</span>
-          </a-form-item>
+          <div style="display: flex; justify-content: space-around; margin-bottom: 10px">
+            <span class="login-text" style="margin-left: -50px">账号密码登录</span>
+            <span class="login-text" style="margin-right: -60px; cursor: pointer">
+              <router-link to="forget">忘记密码</router-link>
+            </span>
+          </div>
           <a-form-item>
             <a-space :size="30">
               <div style="border: 1px solid #e5e5e5; padding: 10px; border-radius: 50%">
@@ -457,8 +466,6 @@ const toggleToLogin = () => {
   flex: 0;
 }
 #user-login .login-text {
-  display: flex;
-  align-items: flex-start;
   color: #262626bf;
 }
 #user-login .login-btn {

@@ -83,6 +83,7 @@ export type { ReplyFavourQueryRequest } from './models/ReplyFavourQueryRequest';
 export type { ReplyThumbAddRequest } from './models/ReplyThumbAddRequest';
 export type { User } from './models/User';
 export type { UserAddRequest } from './models/UserAddRequest';
+export type { UserChangePasswordRequest } from './models/UserChangePasswordRequest';
 export type { UserLoginEmailRequest } from './models/UserLoginEmailRequest';
 export type { UserLoginRequest } from './models/UserLoginRequest';
 export type { UserQueryRequest } from './models/UserQueryRequest';

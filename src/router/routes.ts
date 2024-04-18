@@ -10,14 +10,14 @@ export const routes: Array<RouteRecordRaw> = [
     children: [
       { path: 'login', name: '登录', component: () => import('../views/user/userLoginView.vue') },
       {
-        path: 'email_register',
-        name: '邮箱注册',
-        component: () => import('../views/user/userLoginByEmailView.vue')
-      },
-      {
         path: 'userInfo',
         name: '用户信息',
         component: () => import('../views/user/userInfoView.vue')
+      },
+      {
+        path: 'forget',
+        name: '忘记密码',
+        component: () => import('../views/user/userPasswordForgetView.vue')
       }
     ],
     meta: {
@@ -91,6 +91,15 @@ export const routes: Array<RouteRecordRaw> = [
     path: '/personal/homepage',
     name: '个人主页',
     component: () => import('../views/user/userCenterView.vue'),
+    meta: {
+      Auth: AccessEnum.USER,
+      show: false
+    }
+  },
+  {
+    path: '/user/setting',
+    name: '设置',
+    component: () => import('../views/user/userPasswordSettingView.vue'),
     meta: {
       Auth: AccessEnum.USER,
       show: false
