@@ -143,14 +143,16 @@ const handleSwitchClick = (index: number) => {
         <span class="registration-text" @click="doLogin">登录</span>
       </div>
       <div v-else style="margin-left: 10px">
-        <a-trigger :popup-translate="[-130, 20]" :popup-visible="show">
-          <a-avatar :size="27" style="cursor: pointer" @click="show = !show">
-            <img alt="avatar" :src="userAvatar" />
-          </a-avatar>
+        <a-popover position="lb">
+          <a-trigger :popup-translate="[-130, 20]" :popup-visible="show">
+            <a-avatar :size="27" style="cursor: pointer" @click="show = !show">
+              <img alt="avatar" :src="userAvatar" />
+            </a-avatar>
+          </a-trigger>
           <template #content>
             <SetCenter @click="show = !show" />
           </template>
-        </a-trigger>
+        </a-popover>
       </div>
     </a-col>
   </a-row>

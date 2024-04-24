@@ -16,11 +16,12 @@ import useReplyStore, { type IReply } from '@/stores/reply/reply'
 import message from '@arco-design/web-vue/es/message'
 import { watchEffect } from 'vue'
 import router from '@/router'
+import useUserStore from '@/stores/user/user'
 
 const resData = ref()
 const route = useRoute()
 const isFollow = ref(false)
-
+const isShow = ref(false)
 const dataList = async () => {
   const id = route.query.id as unknown as number
   await PostControllerService.getPostVoByIdUsingGet(id).then((res) => {
@@ -46,6 +47,10 @@ const dataList = async () => {
     }
     console.log(isFollow.value)
   })
+  const loginUser = useUserStore()
+  if (loginUser.id === resData.value.userId) {
+    isShow.value = true
+  }
 }
 const onChangeFollow = async () => {
   const followId = resData.value?.userId
@@ -274,6 +279,22 @@ const handleShow = (value: boolean) => {
   console.log(value)
   show.value = value
 }
+const goHomePage = async () => {
+  await router.push({
+    name: '个人主页',
+    params: { id: resData.value?.user.id }
+  })
+  await window.location.reload()
+}
+const updatePost = async () => {
+  await router.push({
+    path: '/user/updatePost',
+    query: {
+      id: resData.value?.id
+    }
+  })
+  await window.location.reload()
+}
 watch(
   () => route.query.id,
   () => {
@@ -317,6 +338,7 @@ onMounted(() => {
                 </span>
               </span>
             </div>
+            <a-button type="outline" v-if="isShow" @click="updatePost">更新帖子</a-button>
           </div>
           <div style="padding-top: 8px"></div>
           <div class="css-se33k0-QuestionContent">
@@ -339,6 +361,7 @@ onMounted(() => {
                       <a-avatar
                         :image-url="resData?.user?.userAvatar"
                         style="width: 60px; height: 60px; cursor: pointer; margin-right: 12px"
+                        @click="goHomePage"
                       ></a-avatar>
                       <div class="avatar-name">
                         <div class="avatar-name-detail">

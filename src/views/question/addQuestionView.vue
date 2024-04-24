@@ -89,7 +89,7 @@ const doSubmit = async () => {
     const res = await QuestionControllerService.updateQuestionUsingPost(form.value)
     if (res.code === 0) {
       message.success('更新成功')
-      await router.push('/menage/question')
+      await router.push('/manage/question')
     } else {
       message.error('更新失败，' + res.message)
     }

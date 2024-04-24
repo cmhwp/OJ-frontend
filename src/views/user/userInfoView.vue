@@ -2,6 +2,7 @@
 import { reactive, ref } from 'vue'
 import { UserControllerService } from '../../../generated'
 import router from '@/router'
+import message from '@arco-design/web-vue/es/message'
 const uploadFile = ref<string>()
 const userInfoForm = reactive({
   userName: '',
@@ -34,7 +35,8 @@ const onNext = async () => {
       userProfile
     }).then((res) => {
       console.log(res)
-      router.push('/')
+      message.success('修改成功')
+      window.location.href = '/home'
     })
   }
 }

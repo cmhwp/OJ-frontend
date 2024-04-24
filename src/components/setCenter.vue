@@ -3,7 +3,7 @@ import { Image8, Image9, Image10, Image11, Image12, Image13 } from '@/assets/ima
 import { ref, computed } from 'vue'
 import useUserStore from '@/stores/user/user'
 import router from '@/router'
-import { UserControllerService } from '../../generated'
+
 const userAvatar = ref(
   'https://himg.bdimg.com/sys/portraitn/item/03cde88aa5e69cabe59682e58fa3e59abce7b396df8f'
 )
@@ -15,11 +15,15 @@ const avatar = computed(() => {
   return userAvatar.value
 })
 const userName = loginUser.userName
+const id = loginUser.id
 //用户中心
-const goHome = () => {
-  router.push({
-    path: '/personal/homepage'
+const goHome = async () => {
+  console.log('个人主页')
+  await router.push({
+    name: '个人主页',
+    params: { id: id }
   })
+  await window.location.reload()
 }
 //账号设置
 const goCenter = () => {
@@ -36,15 +40,7 @@ const doLogout = async () => {
 </script>
 
 <template>
-  <div
-    style="
-      padding: 16px;
-      width: 296px;
-      background-color: var(--color-bg-popup);
-      border-radius: 20px;
-      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.15);
-    "
-  >
+  <div>
     <a-space direction="vertical" :size="10" style="color: black">
       <div class="avatar-wrapper">
         <img :src="avatar" alt="" class="round-avatar" @click="goHome" />

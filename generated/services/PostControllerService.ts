@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { BaseResponse_boolean_ } from '../models/BaseResponse_boolean_';
+import type { BaseResponse_List_Post_ } from '../models/BaseResponse_List_Post_';
 import type { BaseResponse_long_ } from '../models/BaseResponse_long_';
 import type { BaseResponse_Page_Post_ } from '../models/BaseResponse_Page_Post_';
 import type { BaseResponse_Page_PostVO_ } from '../models/BaseResponse_Page_PostVO_';
@@ -93,6 +94,28 @@ export class PostControllerService {
             url: '/api/post/get/vo',
             query: {
                 'id': id,
+            },
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+    /**
+     * getPostsByUserId
+     * @param userId userId
+     * @returns BaseResponse_List_Post_ OK
+     * @throws ApiError
+     */
+    public static getPostsByUserIdUsingGet(
+        userId?: number,
+    ): CancelablePromise<BaseResponse_List_Post_> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/post/getByUserId',
+            query: {
+                'userId': userId,
             },
             errors: {
                 401: `Unauthorized`,

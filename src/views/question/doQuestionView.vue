@@ -150,19 +150,21 @@
           }}</span>
         </div>
         <div>
-          <a-trigger :popup-translate="[-140, 15]" trigger="hover">
-            <a-avatar :size="30">
-              <img v-if="userAvatar" alt="avatar" :src="userAvatar" />
-              <img
-                v-else
-                alt="avatar"
-                src="https://himg.bdimg.com/sys/portraitn/item/03cde88aa5e69cabe59682e58fa3e59abce7b396df8f"
-              />
-            </a-avatar>
+          <a-popover position="lb">
+            <a-trigger :popup-translate="[-140, 15]" trigger="hover">
+              <a-avatar :size="30">
+                <img v-if="userAvatar" alt="avatar" :src="userAvatar" />
+                <img
+                  v-else
+                  alt="avatar"
+                  src="https://himg.bdimg.com/sys/portraitn/item/03cde88aa5e69cabe59682e58fa3e59abce7b396df8f"
+                />
+              </a-avatar>
+            </a-trigger>
             <template #content>
               <SetCenter />
             </template>
-          </a-trigger>
+          </a-popover>
         </div>
       </div>
     </div>
@@ -879,7 +881,12 @@
                               <template #content>
                                 <a-doption>cpp</a-doption>
                                 <a-doption>java</a-doption>
-                                <a-doption>go</a-doption>
+                                <a-popover>
+                                  <a-doption>python</a-doption>
+                                  <template #content>
+                                    <span>请依据参考代码编写此程序</span>
+                                  </template>
+                                </a-popover>
                               </template>
                             </a-dropdown>
                           </a-trigger>
@@ -969,6 +976,7 @@
                     </div>
                     <a-divider />
                     <CodeEditor
+                      :key="editorKey"
                       :val="question.frontendCode"
                       :language="form.language"
                       :handle-change="changeCode"
@@ -1770,7 +1778,7 @@ const changeTab = (tab: string) => {
 
 const router = useRouter()
 const goToHomePage = () => {
-  window.location.href = '/questions' // 跳转到另一个页面
+  window.location.href = '/question' // 跳转到另一个页面
 }
 
 const buttonStyle = ref({ backgroundColor: '#f0f0f0' })
@@ -1831,6 +1839,7 @@ const loadData = async () => {
   console.log(questionRes)
   if (questionRes.code === 0) {
     question.value = questionRes.data
+    console.log(question.value)
     inputList.value = question.value.input
     inputListName.value = question.value.inputListName
     listNum.value = question.value.inputListName[0][1]
@@ -1891,6 +1900,29 @@ const onStarChange = async () => {
 const form = ref<QuestionSubmitAddRequest>({
   language: 'java'
 })
+
+const editorKey = ref(0)
+// 用于保存原始状态的变量
+const originalState = ref({
+  frontendCode: ''
+})
+// 监听form中language的变化
+watch(
+  () => form.value.language,
+  async (newVal, oldVal) => {
+    if (newVal !== 'java' && oldVal === 'java') {
+      originalState.value.frontendCode = question.value.frontendCode
+      question.value.frontendCode = '' // 清空前端代码
+      editorKey.value++
+      console.log(form.value)
+      message.info('编程语言已更改，相关代码已清空。');
+    } else if (newVal === 'java' && oldVal !== 'java') {
+      // 恢复到原始状态
+      question.value.frontendCode = originalState.value.frontendCode;
+      message.info('编程语言已更改回Java，代码已恢复。');
+    }
+  }
+)
 const handleSelect = (v: any) => {
   form.value.language = v
 }

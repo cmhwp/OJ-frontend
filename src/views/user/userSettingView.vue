@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import useUserStore from '@/stores/user/user'
 import { Image15 } from '@/assets/image/imgExport'
-import { computed, ref, onMounted, watchEffect } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { UserControllerService } from '../../../generated'
 import message from '@arco-design/web-vue/es/message'
 import router from '@/router'
@@ -136,10 +136,8 @@ const man = (gender: number) => {
     womanGenderClass.value = true
   }
 }
-watchEffect(() => {
-  console.log(formRef.value)
-})
 const handleSubmit = async () => {
+  console.log(formRef.value)
   formRef.value.tags = tags.map((item) => item.code)
   await UserControllerService.updateMyUserUsingPost(formRef.value).then((res) => {
     if (res.code === 0) {

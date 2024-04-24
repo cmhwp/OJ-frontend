@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, onMounted, reactive } from 'vue'
 import router from '@/router'
-import { FileControllerService, PostControllerService } from '../../../generated'
+import { FileControllerService, PostControllerService, type PostVO } from '../../../generated'
 import message from '@arco-design/web-vue/es/message'
-import type { FileItem } from '@arco-design/web-vue'
+import { type FileItem, Notification } from '@arco-design/web-vue'
+import { useRoute } from 'vue-router'
+const route = useRoute()
 const mdValue = ref('')
 const handleOnChange = (v: string) => {
   mdValue.value = v
@@ -98,6 +100,7 @@ const onChange = (fileList: FileItem[], fileItem: FileItem) => {
 const onProgress = (currentFile: FileItem) => {
   file.value = currentFile
 }
+const updatePost = route.path.includes('updatePost')
 const handleSubmit = async () => {
   formRef.value.tags = tags.value.map((tag) => tag.text)
   formRef.value.content = mdValue.value
@@ -112,15 +115,76 @@ const handleSubmit = async () => {
     })
   }
   console.log(formRef.value)
-  await PostControllerService.addPostUsingPost(formRef.value).then(async (res) => {
+  if (!updatePost) {
+    console.log('创建')
+    await PostControllerService.addPostUsingPost(formRef.value).then(async (res) => {
+      if (res.code === 0) {
+        Notification.success({
+          title: '发布成功',
+          content: '帖子发布成功，待管理员审核后便可以在讨论页面查看',
+          duration: 3000
+        })
+        await router.back()
+      } else {
+        message.error(res.msg)
+      }
+    })
+  } else {
+    console.log('更新')
+    const updateForm = reactive({
+      id: updatePostInfo.value?.id,
+      title: formRef.value.title,
+      content: formRef.value.content,
+      cover: formRef.value.cover,
+      tags: formRef.value.tags,
+      summary: formRef.value.summary
+    })
+    await PostControllerService.updatePostUsingPost(updateForm).then(async (res) => {
+      console.log(updateForm)
+      if (res.code === 0) {
+        Notification.success({
+          title: '更新成功',
+          content: '帖子更新成功',
+          duration: 3000
+        })
+        await router.back()
+      } else {
+        message.error(res.message)
+      }
+    })
+  }
+}
+const updatePostInfo = ref<PostVO>()
+onMounted(async () => {
+  const id = route.query.id as number
+  if (!id) {
+    console.log('id不存在')
+    return
+  }
+  await PostControllerService.getPostVoByIdUsingGet(id).then((res) => {
     if (res.code === 0) {
-      message.success('发布成功')
-      await router.back()
+      updatePostInfo.value = res.data
+      console.log(updatePostInfo)
+      formRef.value.cover = res.data?.cover
+      formRef.value.title = res.data?.title
+      mdValue.value = res.data?.content
+      formRef.value.topic = res.data?.topic
+      formRef.value.summary = res.data?.summary
+      if (!res.data?.tagList) {
+        tags.value = [] // 使用 ref 更新
+      } else {
+        tags.value = res.data.tagList.map((text) => ({
+          text: text,
+          color: colors[Math.floor(Math.random() * colors.length)]
+        }))
+      }
+      console.log('Tags after update:', tags.value)
+      message.success('数据加载成功')
     } else {
-      message.error(res.msg)
+      message.error('数据加载失败' + res.message)
     }
   })
-}
+})
 </script>
 
 <template>
@@ -157,11 +221,12 @@ const handleSubmit = async () => {
           </a-select>
         </div>
         <div style="with: 1px; margin-right: 10px"></div>
-        <div class="tag-div" v-for="tag of tags" :key="tag.text" style="padding: 0 10px">
-          <a-tag @close="handleRemove(tag)" closable :color="tag.color">
+        <div class="tag-div" v-for="tag in tags" :key="tag.text" style="padding: 0 10px">
+          <a-tag @close="() => handleRemove(tag)" closable :color="tag.color">
             {{ tag.text }}
           </a-tag>
         </div>
+
         <a-input
           v-if="showInput"
           ref="inputRef"

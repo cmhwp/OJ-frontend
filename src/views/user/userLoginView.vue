@@ -42,7 +42,9 @@ const handleLoginClick = () => {
 const formRegister = reactive({
   userAccount: '',
   userPassword: '',
-  checkPassword: ''
+  checkPassword: '',
+  email: '',
+  code: ''
 })
 const handleRegisterClick = async () => {
   await loginState.userRegisterAction(formRegister)
@@ -69,7 +71,9 @@ const handleEmailClick = () => {
 const handleSendEmail = async () => {
   await CodeControllerService.sendEmailLoginCodeUsingGet(formEmail.email).then((res) => {
     if (res.code === 0) {
-      startCountdown()
+      if (!isSending.value) {
+        startCountdown()
+      }
       Notification.success({
         title: '发送成功',
         content: '验证码已发送至您的邮箱，请注意查收。',
@@ -96,15 +100,18 @@ const handleCancel = () => {
 }
 //计时器
 const countdown = ref(0)
+const isSending = ref(false) // 控制按钮是否可以点击
 let timer: NodeJS.Timeout | null = null // 手动声明 timer 变量的类型
 const startCountdown = () => {
   countdown.value = 60 // 设置倒计时时间
+  isSending.value = true // 开始时禁用按钮
   timer = setInterval(() => {
     if (countdown.value > 0) {
       countdown.value--
     } else {
       clearInterval(timer!) // 倒计时结束，清除计时器
       timer = null
+      isSending.value = false // 计时结束，启用按钮
     }
   }, 1000) // 每隔一秒执行一次倒计时
 }
@@ -123,7 +130,26 @@ onBeforeUnmount(() => {
     clearInterval(timer)
   }
 })
-
+const handleSendEmailRegister = async () => {
+  await CodeControllerService.sendRegisterCodeUsingGet(formRegister.email).then((res) => {
+    if (res.code === 0) {
+      if (!isSending.value) {
+        startCountdown()
+      }
+      Notification.success({
+        title: '发送成功',
+        content: '验证码已发送至您的邮箱，请注意查收。',
+        duration: 3000
+      })
+    } else {
+      Notification.error({
+        title: '发送失败',
+        content: '验证码发送失败，请稍后重试或联系管理员。' + '错误信息' + res.message,
+        duration: 3000
+      })
+    }
+  })
+}
 const toggleToLogin = () => {
   defaultValue.value = 1
 }
@@ -248,7 +274,13 @@ const toggleToLogin = () => {
               v-model="formRegister.userAccount"
             ></a-input>
           </a-form-item>
-          <a-form-item field="userAccount" :rules="accountRules.userPassword">
+          <a-form-item
+            field="userPassword"
+            :rules="[
+              { required: true, message: '请输入密码' },
+              { min: 8, max: 16, message: '密码长度必须为8-16位' }
+            ]"
+          >
             <a-input-password
               allow-clear
               style="height: 40px"
@@ -257,7 +289,13 @@ const toggleToLogin = () => {
               v-model="formRegister.userPassword"
             ></a-input-password>
           </a-form-item>
-          <a-form-item field="userAccount" :rules="accountRules.checkPassword">
+          <a-form-item
+            field="checkPassword"
+            :rules="[
+              { required: true, message: '请再次输入密码' },
+              { min: 8, max: 16, message: '密码长度必须为8-16位' }
+            ]"
+          >
             <a-input-password
               allow-clear
               style="height: 40px"
@@ -265,6 +303,43 @@ const toggleToLogin = () => {
               class="login-input"
               v-model="formRegister.checkPassword"
             ></a-input-password>
+          </a-form-item>
+          <a-form-item
+            field="email"
+            :rules="[
+              { required: true, message: '请输入邮箱' },
+              { type: 'email', message: '请输入有效的邮箱地址', trigger: ['blur', 'change'] }
+            ]"
+          >
+            <a-input
+              allow-clear
+              style="height: 40px"
+              placeholder="请输入邮箱"
+              class="login-input"
+              v-model="formRegister.email"
+            >
+              <template #suffix>
+                <span
+                  style="cursor: pointer"
+                  :class="{ disabled: isSending }"
+                  @click="handleSendEmailRegister"
+                >
+                  {{ countdown > 0 ? countdown + 's 后重新发送' : '发送验证码' }}
+                </span>
+              </template>
+            </a-input>
+          </a-form-item>
+          <a-form-item
+            field="verificationCode"
+            :rules="[{ required: true, message: '请输入验证码' }]"
+          >
+            <a-input
+              allow-clear
+              style="height: 40px"
+              placeholder="请输入验证码"
+              class="login-input"
+              v-model="formRegister.code"
+            ></a-input>
           </a-form-item>
           <div style="display: flex; justify-content: flex-end">
             <span style="cursor: pointer; color: #262626bf; font-size: 13px" @click="toggleToLogin"
@@ -275,34 +350,6 @@ const toggleToLogin = () => {
             <a-button @click="handleRegisterClick" size="large" class="reg-btn">
               <span>注册</span>
             </a-button>
-          </a-form-item>
-          <a-form-item>
-            <a-space :size="36">
-              <div style="border: 1px solid #e5e5e5; padding: 10px; border-radius: 50%">
-                <icon-qq :size="19" style="color: #4a9afd; cursor: pointer" />
-              </div>
-              <div style="border: 1px solid #e5e5e5; padding: 10px; border-radius: 50%">
-                <icon-github :size="19" style="color: #202020; cursor: pointer" />
-              </div>
-              <div style="border: 1px solid #e5e5e5; padding: 10px; border-radius: 50%">
-                <icon-weibo-circle-fill :size="19" style="color: #e90e24; cursor: pointer" />
-              </div>
-              <div style="border: 1px solid #e5e5e5; padding: 10px; border-radius: 50%">
-                <icon-wechat :size="19" style="color: #00ca00; cursor: pointer" />
-              </div>
-              <a-popover position="rb">
-                <div style="border: 1px solid #e5e5e5; padding: 10px; border-radius: 50%">
-                  <icon-more :size="19" />
-                </div>
-                <template #content>
-                  <icon-email
-                    :size="25"
-                    style="color: rgb(254, 224, 130)"
-                    @click="handleEmailClick"
-                  />
-                </template>
-              </a-popover>
-            </a-space>
           </a-form-item>
           <a-form-item
             style="
@@ -347,10 +394,14 @@ const toggleToLogin = () => {
               allow-clear
               v-model="formEmail.email"
             >
-              <template #append>
-                <a-button type="primary" :disabled="countdown > 0" @click="handleSendEmail">{{
-                  countdown > 0 ? countdown + 's 后重新发送' : '发送验证码'
-                }}</a-button>
+              <template #suffix>
+                <span
+                  style="cursor: pointer"
+                  :class="{ disabled: isSending }"
+                  @click="handleSendEmail"
+                >
+                  {{ countdown > 0 ? countdown + 's 后重新发送' : '发送验证码' }}
+                </span>
               </template>
             </a-input>
           </a-form-item>
@@ -405,11 +456,12 @@ const toggleToLogin = () => {
 }
 .login-input-email {
   height: 40px;
+  text-align: center;
   text-indent: 10px; /* 将文本和光标向右移动 5px */
   border-radius: 10px;
   border: 1px solid #e5e5e5; /* 设置边框颜色为灰色 */
   background: rgba(255, 255, 255, 1);
-  width: 70%;
+  width: 90%;
 }
 :deep(.arco-input-wrapper .arco-input) {
   width: 300px;
@@ -484,5 +536,9 @@ const toggleToLogin = () => {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.disabled {
+  color: #ccc;
+  cursor: not-allowed;
 }
 </style>

@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { type ICalendarItem } from 'calendar'
+import { type ICalendarItem } from './calendar'
 import calendarService from '@/components/calendar/calendar-service'
 import { isEqualDate } from '@/components/calendar/getMonthDateList'
 

@@ -31,7 +31,7 @@ export const routes: Array<RouteRecordRaw> = [
   {
     path: '/home',
     name: '主页',
-    component: () => import('../views/notFound/not-foundView.vue')
+    component: () => import('../views/HomeView.vue')
   },
   {
     path: '/question',
@@ -88,7 +88,7 @@ export const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: '/personal/homepage',
+    path: '/personal/homepage/:id',
     name: '个人主页',
     component: () => import('../views/user/userCenterView.vue'),
     meta: {
@@ -108,6 +108,15 @@ export const routes: Array<RouteRecordRaw> = [
   {
     path: '/user/addPost',
     name: '发帖',
+    component: () => import('../views/post/addPostView.vue'),
+    meta: {
+      Auth: AccessEnum.USER,
+      show: false
+    }
+  },
+  {
+    path: '/user/updatePost',
+    name: '更新帖子',
     component: () => import('../views/post/addPostView.vue'),
     meta: {
       Auth: AccessEnum.USER,
