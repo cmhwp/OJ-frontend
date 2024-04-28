@@ -68,8 +68,13 @@ const useUserStore = defineStore('user', {
           // 存储token
           router.push('/')
         } else {
+          message.error('登录失败' + res.message)
           this.userRole = accessEnum.NOT_LOGIN
         }
+      } else {
+        message.error('登录失败' + loginResult.message)
+        this.userRole = accessEnum.NOT_LOGIN
+        await router.push('login')
       }
     },
     async getLoginUserAction() {

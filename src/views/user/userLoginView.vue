@@ -3,14 +3,15 @@ import image from '@/assets/logo.svg'
 import { reactive, ref, watch, onBeforeUnmount } from 'vue'
 import SlideCode from '@/components/slideCode.vue'
 import useUserStore from '@/stores/user/user'
-import router from '@/router'
 import {
   accountRules,
   Account_Verification,
-  Password_Verification
+  Password_Verification,
+  Check_Password_Verification
 } from '@/utils/userRule/accountConfig'
 import { CodeControllerService } from '../../../generated'
 import { Notification } from '@arco-design/web-vue'
+import message from '@arco-design/web-vue/es/message'
 //表单信息
 const form = reactive({
   userAccount: '',
@@ -46,8 +47,14 @@ const formRegister = reactive({
   email: '',
   code: ''
 })
+const register_btn = ref(false)
 const handleRegisterClick = async () => {
-  await loginState.userRegisterAction(formRegister)
+  if (Check_Password_Verification && Account_Verification && Password_Verification) {
+    await loginState.userRegisterAction(formRegister)
+    register_btn.value = true
+  } else {
+    message.error('请正确填写注册信息')
+  }
 }
 const defaultValue = ref(1)
 const toggleRegisterClick = () => {
@@ -274,13 +281,7 @@ const toggleToLogin = () => {
               v-model="formRegister.userAccount"
             ></a-input>
           </a-form-item>
-          <a-form-item
-            field="userPassword"
-            :rules="[
-              { required: true, message: '请输入密码' },
-              { min: 8, max: 16, message: '密码长度必须为8-16位' }
-            ]"
-          >
+          <a-form-item field="userPassword" :rules="accountRules.userPassword">
             <a-input-password
               allow-clear
               style="height: 40px"
@@ -289,13 +290,7 @@ const toggleToLogin = () => {
               v-model="formRegister.userPassword"
             ></a-input-password>
           </a-form-item>
-          <a-form-item
-            field="checkPassword"
-            :rules="[
-              { required: true, message: '请再次输入密码' },
-              { min: 8, max: 16, message: '密码长度必须为8-16位' }
-            ]"
-          >
+          <a-form-item field="checkPassword" :rules="accountRules.checkPassword">
             <a-input-password
               allow-clear
               style="height: 40px"
@@ -347,7 +342,12 @@ const toggleToLogin = () => {
             >
           </div>
           <a-form-item style="width: 120%">
-            <a-button @click="handleRegisterClick" size="large" class="reg-btn">
+            <a-button
+              @click="handleRegisterClick"
+              size="large"
+              class="reg-btn"
+              :disabled="register_btn"
+            >
               <span>注册</span>
             </a-button>
           </a-form-item>

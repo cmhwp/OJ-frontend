@@ -11,6 +11,7 @@ import {
 import message from '@arco-design/web-vue/es/message'
 import useUserStore from '@/stores/user/user'
 import moment from 'moment'
+import router from '@/router'
 // 手动设置中文格式
 moment.updateLocale('zh-cn', {
   relativeTime: {
@@ -92,8 +93,15 @@ const handleFollowClick = async () => {
   })
 }
 const tagList = ref()
-const postList = ref<PostVO>([])
+const postList = ref<PostVO[]>([])
 const showList = ref(false)
+const followList = ref<UserVO[]>([])
+
+const handleToUser = async (id: number) => {
+  await router.push({ path: `/personal/homepage/${id}` })
+  window.location.reload()
+}
+
 onMounted(async () => {
   await UserControllerService.getUserVoByIdUsingGet(id).then((res) => {
     if (res.code === 0) {
@@ -128,13 +136,34 @@ onMounted(async () => {
   })
   await PostControllerService.getPostsByUserIdUsingGet(id).then((res) => {
     if (res.code === 0) {
-      postList.value = res.data
-      if (postList.value?.length > 0) {
-        showList.value = true
+      if (res.data) {
+        // Assign the array of posts directly to postList.value
+        postList.value = res.data
+        if (postList.value.length > 0) {
+          showList.value = true
+        }
+        console.log(postList.value)
+      } else {
+        // Handle the case where res.data is undefined
+        // For example, you might want to show a message or handle it differently
+        console.error('Post data is undefined')
       }
-      console.log(postList.value)
     } else {
       message.error('帖子加载失败' + res.message)
+    }
+  })
+  await FollowControllerService.listFollowByPageUsingPost({ userId: id }).then((res) => {
+    if (res.code === 0) {
+      if (res.data && res.data.records) {
+        // Iterate over each record and push it into followList
+        res.data.records.forEach((record: UserVO) => {
+          // Assuming UserVO and the structure of the record are compatible
+          followList.value.push(record)
+          console.log(followList.value)
+        })
+      }
+    } else {
+      message.error('关注加载失败' + res.message)
     }
   })
 })
@@ -166,10 +195,28 @@ onMounted(async () => {
                 margin-right: 1.75rem;
               "
             >
-              <div style="color: #262626bf">关注了</div>
-              <div style="--tw-text-opacity: 1; color: rgb(38 38 38 / var(--tw-text-opacity))">
-                {{ userInfo?.concernNum }}
-              </div>
+              <a-popover title="关注列表">
+                <div style="color: #262626bf">关注了</div>
+                <div style="--tw-text-opacity: 1; color: rgb(38 38 38 / var(--tw-text-opacity))">
+                  {{ userInfo?.concernNum }}
+                </div>
+                <template #content>
+                  <a-list>
+                    <a-list-item
+                      v-for="(item, index) in followList"
+                      :key="index"
+                      style="width: 200px"
+                      @click="handleToUser(<number>item.id)"
+                    >
+                      <a-list-item-meta :title="item.userName" :description="item.userProfile">
+                        <template #avatar>
+                          <a-avatar shape="square" :image-url="item.userAvatar"></a-avatar>
+                        </template>
+                      </a-list-item-meta>
+                    </a-list-item>
+                  </a-list>
+                </template>
+              </a-popover>
             </div>
             <div style="display: flex; align-items: center">
               <div

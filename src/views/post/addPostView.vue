@@ -20,7 +20,7 @@ interface Tag {
 }
 
 const tags = ref<Tag[]>([])
-const inputRef = ref(null)
+const inputRef = ref<HTMLInputElement | null>(null);
 const showInput = ref(false)
 const inputVal = ref('')
 
@@ -110,7 +110,7 @@ const handleSubmit = async () => {
         formRef.value.cover = res.data
         console.log(formRef.value)
       } else {
-        message.error(res.msg)
+        message.error('上传图片失败' + res.message)
       }
     })
   }
@@ -139,7 +139,7 @@ const handleSubmit = async () => {
       tags: formRef.value.tags,
       summary: formRef.value.summary
     })
-    await PostControllerService.updatePostUsingPost(updateForm).then(async (res) => {
+    await PostControllerService.editPostUsingPost(updateForm).then(async (res) => {
       console.log(updateForm)
       if (res.code === 0) {
         Notification.success({
@@ -156,7 +156,7 @@ const handleSubmit = async () => {
 }
 const updatePostInfo = ref<PostVO>()
 onMounted(async () => {
-  const id = route.query.id as number
+  const id = route.query.id as unknown as number
   if (!id) {
     console.log('id不存在')
     return
@@ -165,11 +165,11 @@ onMounted(async () => {
     if (res.code === 0) {
       updatePostInfo.value = res.data
       console.log(updatePostInfo)
-      formRef.value.cover = res.data?.cover
-      formRef.value.title = res.data?.title
-      mdValue.value = res.data?.content
-      formRef.value.topic = res.data?.topic
-      formRef.value.summary = res.data?.summary
+      formRef.value.cover = <string>res.data?.cover
+      formRef.value.title = <string>res.data?.title
+      mdValue.value = <string>res.data?.content
+      formRef.value.topic = <string>res.data?.topic
+      formRef.value.summary = <string>res.data?.summary
       if (!res.data?.tagList) {
         tags.value = [] // 使用 ref 更新
       } else {
@@ -180,7 +180,8 @@ onMounted(async () => {
       }
       console.log('Tags after update:', tags.value)
       message.success('数据加载成功')
-    } else {
+    }
+    else {
       message.error('数据加载失败' + res.message)
     }
   })
