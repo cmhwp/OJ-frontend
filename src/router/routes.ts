@@ -160,6 +160,25 @@ export const routes: Array<RouteRecordRaw> = [
     }
   },
   {
+    path: '/search',
+    name: '聚合搜索',
+    component: () => import('../views/search/searchPageView.vue'),
+    props: true,
+    meta: {
+      access: accessEnum.USER,
+      show: false
+    }
+  },
+  {
+    path: '/search/:category',
+    component: () => import('../views/search/searchPageView.vue'),
+    props: true,
+    meta: {
+      access: AccessEnum.USER,
+      show: false
+    }
+  },
+  {
     path: '/:pathMatch(.*)*',
     component: () => import('../views/notFound/not-foundView.vue')
   }

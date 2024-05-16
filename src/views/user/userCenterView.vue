@@ -205,7 +205,7 @@ onMounted(async () => {
                     <a-list-item
                       v-for="(item, index) in followList"
                       :key="index"
-                      style="width: 200px"
+                      style="width: 300px"
                       @click="handleToUser(<number>item.id)"
                     >
                       <a-list-item-meta :title="item.userName" :description="item.userProfile">

@@ -217,7 +217,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watchEffect, onMounted } from 'vue'
+import { ref, watchEffect } from 'vue'
 import message from '@arco-design/web-vue/es/message'
 import { useRoute, useRouter } from 'vue-router'
 import {

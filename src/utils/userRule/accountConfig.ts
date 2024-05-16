@@ -19,9 +19,9 @@ export const accountRules = {
             !/(?=.*[a-zA-Z])(?=.*[^a-zA-Z\d])/.test(value)
           ) {
             callback('账号必须包含字母、数字、符号中至少两种类型!')
-          } else if (value.length < 5 || value.length > 16) {
-            callback('账号长度必须为5-16位！')
-          } else if (/([a-zA-Z0-9])\1{5,}/.test(value)) {
+          } else if (value.length < 5 || value.length > 25) {
+            callback('账号长度必须为5-25位！')
+          } else if (/([a-zA-Z0-9])\1{10,}/.test(value)) {
             callback('账号不可以包含连续重复的6位及以上的字母或数字!')
           } else {
             Account_Verification.value = true

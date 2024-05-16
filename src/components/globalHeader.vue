@@ -65,7 +65,9 @@ const doLogin = () => {
 }
 console.log('routeList', routeList)
 console.log('userInfo', userInfo)
-const smallColor = ref('#737373')
+const searchParams = ref({
+  searchText: undefined
+})
 
 //开关
 const handleSwitchClick = (index: number) => {
@@ -75,6 +77,14 @@ const handleSwitchClick = (index: number) => {
     // 执行亮色模式相关操作
     document.body.removeAttribute('arco-theme')
   }
+}
+
+//搜索
+const handleSearch = () => {
+  router.push({
+    path: '/search',
+    query: searchParams.value
+  })
 }
 </script>
 
@@ -103,6 +113,19 @@ const handleSwitchClick = (index: number) => {
         align-items: center;
       "
     >
+      <a-popover position="left">
+        <div class="icon-div">
+          <icon-search class="icon-search" />
+        </div>
+        <template #content>
+          <a-input-search
+            placeholder="搜索"
+            style="border-radius: 10px"
+            v-model="searchParams.searchText"
+            @search="handleSearch"
+          />
+        </template>
+      </a-popover>
       <a-trigger>
         <div class="icon-sun">
           <IconSun style="height: 24px; width: 24px" />
@@ -199,5 +222,21 @@ const handleSwitchClick = (index: number) => {
 }
 .list-change:hover {
   background-color: #e7e7e7;
+}
+.icon-search {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+.icon-div {
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+}
+.icon-div:hover {
+  background-color: #000a200d;
+  padding: 8px;
 }
 </style>

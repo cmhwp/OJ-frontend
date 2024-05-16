@@ -51,9 +51,12 @@ declare module 'vue' {
     MemoryEcharts: typeof import('./src/components/judgeEcharts/memoryEcharts.vue')['default']
     MemoryMinEcharts: typeof import('./src/components/judgeEcharts/memoryMinEcharts.vue')['default']
     MonacoEditor: typeof import('./src/components/monacoEditor.vue')['default']
+    PicturePage: typeof import('./src/components/search/picturePage.vue')['default']
+    PostPage: typeof import('./src/components/search/postPage.vue')['default']
     QuestionAnswer: typeof import('./src/components/question/questionAnswer.vue')['default']
     QuestionDescript: typeof import('./src/components/question/questionDescript.vue')['default']
     QuestionNote: typeof import('./src/components/question/questionNote.vue')['default']
+    QuestionPage: typeof import('./src/components/search/questionPage.vue')['default']
     ReplyEditorModal: typeof import('./src/components/reply/replyEditorModal.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
@@ -61,5 +64,6 @@ declare module 'vue' {
     SlideCode: typeof import('./src/components/slideCode.vue')['default']
     TimeEcharts: typeof import('./src/components/judgeEcharts/timeEcharts.vue')['default']
     TimeMinEcharts: typeof import('./src/components/judgeEcharts/timeMinEcharts.vue')['default']
+    UserPage: typeof import('./src/components/search/userPage.vue')['default']
   }
 }

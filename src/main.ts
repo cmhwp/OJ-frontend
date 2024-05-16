@@ -15,5 +15,7 @@ const app = createApp(App)
 app.use(stores)
 import '@/utils/access'
 app.use(router)
+app.config.compilerOptions.isCustomElement = (tag) =>
+  tag.startsWith('highlightKeyword') || tag === 'span'
 app.mount('#app')
 app.use(hljsVuePlugin)
